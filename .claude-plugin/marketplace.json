@@ -1,0 +1,15 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "ledgerai",
+  "description": "Shared Claude Code plugins for the LedgerVision AI team",
+  "owner": {
+    "name": "Vuththana"
+  },
+  "plugins": [
+    {
+      "name": "ledgerai",
+      "description": "LedgerVision team hooks, skills, agents and commands shared across every repo",
+      "source": "./plugins/ledgerai"
+    }
+  ]
+}

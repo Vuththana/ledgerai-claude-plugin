@@ -1,0 +1,8 @@
+{
+  "name": "ledgerai",
+  "version": "0.1.0",
+  "description": "LedgerVision team hooks, skills, agents and commands shared across every repo",
+  "author": {
+    "name": "Vuththana"
+  }
+}

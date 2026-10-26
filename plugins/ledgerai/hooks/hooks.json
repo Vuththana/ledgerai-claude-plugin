@@ -1,0 +1,18 @@
+{
+  "description": "LedgerVision team hooks",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/eslint-fix.sh\"",
+            "timeout": 60,
+            "statusMessage": "ESLint --fix"
+          }
+        ]
+      }
+    ]
+  }
+}
