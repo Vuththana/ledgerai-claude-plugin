@@ -1,7 +1,7 @@
 {
   "name": "ledgerai",
-  "version": "0.1.0",
-  "description": "LedgerVision team hooks, skills, agents and commands shared across every repo",
+  "version": "0.2.0",
+  "description": "LedgerVision team-wide tooling for every repo: data dictionary checker agent and /ledgerai:plan-feature",
   "author": {
     "name": "Vuththana"
   }

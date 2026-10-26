@@ -8,8 +8,13 @@
   "plugins": [
     {
       "name": "ledgerai",
-      "description": "LedgerVision team hooks, skills, agents and commands shared across every repo",
+      "description": "Team-wide tooling for every LedgerVision repo: data dictionary checker agent and the plan-feature command",
       "source": "./plugins/ledgerai"
+    },
+    {
+      "name": "website-dev",
+      "description": "Web front-end tooling: Next.js 16, Hairline UI and mock-API skills, plus an ESLint --fix hook",
+      "source": "./plugins/website-dev"
     }
   ]
 }
