@@ -5,6 +5,7 @@
 - **Use the names exactly**, including snake_case: `transaction_date`, `usd_equivalent`, `original_currency`. This applies to table and column names in migrations, `@Table` / `@Column` names, JSON field names in requests and responses, and event payloads. Java fields may be camelCase, but the column and JSON names they map to must be the dictionary names. Don't rename, shorten, or "improve" a name.
 - **Match the rules too:** types, lengths, required flags (`NOT NULL`), defaults, enum values, unique constraints and foreign keys. Bean Validation on request DTOs follows them (`@NotNull`, `@Size(max = …)`, …).
 - **Only this service's tables.** Migrate and write only the tables `docs/TRD.md` §1a gives to this service.
+- **JSONB columns:** the keys inside each one are in `docs/data-dictionary/jsonb-shapes.md`, and the same rules apply to them: exact names, types, allowed values, and amounts as `BigDecimal` in the stated currency. A 📝 shape is a draft flow's proposal: don't build on it until that flow is approved.
 - **Need a field that isn't there, or think one is wrong?** Don't add or change it in code, and don't edit `docs/data-dictionary/` from this repo. Propose the change in the docs repo (`docs/GUIDE.md` §7). The code follows once it's merged and the submodule is updated.
 - **A flow and the dictionary disagree?** Raise it. Don't pick one yourself.
 

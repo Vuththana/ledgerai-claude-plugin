@@ -12,6 +12,7 @@ The `docs/` submodule (`ledgerai-project-docs`) is the source of truth for what 
 | `docs/flow/README.md` | Which flow covers the feature, and its status (✅ approved / 📝 draft) |
 | `docs/flow/<feature>.md` | Behaviour, screens, states, messages, roles, decisions, open questions |
 | `docs/data-dictionary/` (`README.md` maps tables to files) | Every table and field |
+| `docs/data-dictionary/jsonb-shapes.md` | The keys inside every `jsonb` column, each ✅ settled or 📝 proposed |
 | `docs/TRD.md` | Technical requirements: stack, API, security, data, jobs, non-functional. Only ✅ items are settled |
 | `docs/TEAM-RULES.md` | The rules every repo follows |
 | `docs/VERSION.md` | What changed recently |
@@ -21,7 +22,7 @@ The `docs/` submodule (`ledgerai-project-docs`) is the source of truth for what 
 1. Find the feature in `docs/flow/README.md` and note its status.
 2. Read the whole flow doc, including its diagrams.
 3. Separate what's settled from what isn't. In a 📝 draft, "Proposed decisions" and "Open questions" are not settled (see `docs/TEAM-RULES.md` §6).
-4. Read the dictionary sections for every table the flow names.
+4. Read the dictionary sections for every table the flow names, and the `jsonb-shapes.md` section of each of their `jsonb` columns. A 📝 shape is a proposal, like the rest of a draft flow.
 5. Note every conflict between the flow and the dictionary, and every field the flow needs that the dictionary lacks (the flow's "Data dictionary gaps" section). Raise these. Don't resolve them yourself.
 6. Check `docs/VERSION.md` for recent changes to the feature.
 

@@ -238,6 +238,8 @@ The icon and license warnings only matter for the public plugin directory, so ig
 
 | Plugin | Version | Change |
 |---|---|---|
+| `ledgerai` | 0.5.0 | `dictionary-checker` checks JSONB content against `docs/data-dictionary/jsonb-shapes.md` (docs v4.1.0): mismatches for ✅ shapes, notes for 📝 proposed ones. `analyze-requirements` reads the shapes too |
+| `springboot-dev` | 0.3.0 | The `data-dictionary.md` rule template points to `jsonb-shapes.md` for the keys inside `jsonb` columns |
 | `springboot-dev` | 0.2.0 | Follows `docs/TRD.md` v3.0.0: `ApiResponse` envelope with `code`, one schema per service, OpenFeign + Resilience4j, Consul KV config, S3/RustFS, Zipkin, springdoc. `setup-service` checks for them, and `debug-backend` covers Consul, Feign and schemas |
 | `springboot-dev` | 0.1.0 | New: `setup-service` (installs the service template: settings, `CLAUDE.md`, `.claude/rules/` incl. `spring.md`, built from `docs/TRD.md` v2.0.0), `implement-feature`, `add-migration`, `add-endpoint`, `write-tests`, `debug-backend`, `review-pull-request`, and the compile-check hook |
 | `ledgerai` | 0.4.0 | `dictionary-checker` also checks Java entities, DTOs and Flyway migrations |
