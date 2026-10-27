@@ -137,9 +137,10 @@ Only for you, in one repo: `{ "enabledPlugins": { "website-dev@ledgerai": false 
 
 ## Adding the plugins to a new repo
 
-1. Copy a template to `<repo>/.claude/settings.json`: `templates/web-project-settings.json` for a web front end (both plugins), or `templates/project-settings.json` for anything else (`ledgerai` only). Adjust the permissions.
+1. Copy a template to `<repo>/.claude/settings.json`: `templates/web-project-settings.json` for a web front end (both plugins), `templates/backend/settings.json` for a Spring Boot service, or `templates/project-settings.json` for anything else (`ledgerai` only). Adjust the permissions.
 2. Add the `docs` submodule at `docs/`.
 3. Write the repo's `CLAUDE.md` (commands, stack, architecture) and its `.claude/rules/`: the repo's version of `docs/TEAM-RULES.md`, plus its own coding standards.
+   - **Spring Boot service** (identity, sales, finance, api-gateway): copy `templates/backend/CLAUDE.md` to the repo root and `templates/backend/rules/` to `.claude/rules/`. Then replace every `<...>` placeholder with the service's details from `docs/TRD.md` §1a.
 4. Commit all of it.
 
 ---
@@ -164,6 +165,8 @@ A skill that only lists facts or conventions is really a rule or a doc. Move it.
 plugins/ledgerai/      .claude-plugin/plugin.json · agents/ · skills/<name>/SKILL.md   (6 skills)
 plugins/website-dev/   .claude-plugin/plugin.json · hooks/ · skills/<name>/SKILL.md    (6 skills)
 templates/             project-settings.json · web-project-settings.json
+templates/backend/     settings.json · CLAUDE.md · rules/ (project, workflow, packages, data-dictionary,
+                       language, feature-flows, spring)   for the Spring Boot services
 ```
 
 Skills sit directly at `skills/<name>/SKILL.md`, because Claude Code doesn't look in subfolders. The 01–06 grouping lives in this README.
@@ -207,6 +210,7 @@ The icon and license warnings only matter for the public plugin directory, so ig
 
 | Plugin | Version | Change |
 |---|---|---|
+| templates | — | New `templates/backend/`: settings, `CLAUDE.md` skeleton and `.claude/rules/` for the Spring Boot services, with Spring coding standards (`spring.md`) built from `docs/TRD.md` v2.0.0 |
 | `ledgerai` | 0.3.0 | Workflow-only skills that point to the docs: `analyze-requirements`, `document-feature` (was `/ledgerai:plan-feature`), `identify-edge-cases`, `review-feature`, `manage-dependencies` (uses the `TEAM-RULES.md` §7 template), `sync-project-specs` |
 | `website-dev` | 0.2.0 | Workflow-only skills: `implement-feature`, `debug-frontend`, `review-pull-request`, three test placeholders. Standards moved to web-ui `.claude/rules/`. Removed `nextjs-16`, `hairline-ui`, `mock-api-layer` |
 | `ledgerai` | 0.2.0 | Added `dictionary-checker` agent and `/ledgerai:plan-feature`. ESLint hook moved to `website-dev` |
