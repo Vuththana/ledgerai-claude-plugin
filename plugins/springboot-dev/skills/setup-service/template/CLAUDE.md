@@ -20,8 +20,10 @@ Don't restate the docs in code, rules or skills. Point to the flow section inste
 ## Commands
 
 ```bash
-docker compose -f infra/docker-compose.yml up -d   # Postgres 17, Redis, RabbitMQ, Consul (+ config seed), Keycloak, RustFS, Zipkin, Mailpit, api-gateway <adjust to the repo>
-./gradlew bootRun             # run the service, http://localhost:<port>
+# Shared infrastructure (Postgres, Keycloak, Consul, Redis, ..., api-gateway): one set for all services,
+# started from identity-service's infra/. How: .claude/rules/infrastructure.md
+docker compose up -d consul-seed   # load this service's config into Consul (after every Consul restart)
+./gradlew bootRun             # run the service, http://localhost:<port> (reads .env)
 ./gradlew build               # compile + all tests (integration tests need Docker for Testcontainers)
 ./gradlew test --tests '<pattern>'   # one test class or method
 ```
@@ -36,8 +38,8 @@ Java 21, Spring Boot 3.5.16, Spring Cloud, Gradle (Groovy DSL), Spring Data JPA 
 - **Owns tables:** <tables from `docs/TRD.md` §1a>. Only these get migrations and writes here.
 - **Base package:** `com.ledgervision.<service>`
 - **Database schema:** `<schema>` (Flyway migrates it and keeps its history there)
-- **Configuration:** Consul KV. Shared: `infra/consul/application.yml` → `config/application/data`. This service: `consul/<service>.yml` → `config/<service>/data` (+ `-docker`)
-- **Consul service name:** `<service-name>`. Behind the gateway at `/api/v1/<route>/**`.
+- **Configuration:** Consul KV. Shared: `config/application/data`, from identity-service's `infra/consul/application.yml`. This service: `consul/<service>.yml` → `config/<service>/data` (+ `-docker`)
+- **Consul service name:** `<service-name>`, port `<port>` (`docs/TRD.md` §1b). Behind the gateway at `/api/v1/<route>/**`.
 - **Events:** publishes <...> · consumes <...>
 
 ## Architecture

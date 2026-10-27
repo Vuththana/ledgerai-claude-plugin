@@ -43,11 +43,11 @@ Replace every `<...>` in the installed `CLAUDE.md` and `.claude/rules/project.md
 | features and their flow files | `docs/TRD.md` §1a + `docs/flow/README.md` |
 | owned tables | `docs/TRD.md` §1a |
 | base package | the existing `src/main/java` package, else `com.ledgervision.<service>` |
-| port | `server.port` in `application.yml` / `application.properties`, else ask |
+| port | `docs/TRD.md` §1b; if `server.port` in `application.yml` differs, report it |
 | schema | the service's schema in `docs/TRD.md` §1a (`identity`, `sales`, `finance`) |
-| compose command | the repo's real compose file(s), e.g. `infra/docker-compose.yml` |
+| compose command | the repo's own `docker-compose.yml`. The shared infrastructure is started from identity-service's `infra/` (`rules/infrastructure.md`) |
 | events published / consumed | `docs/TRD.md` §1a rules (e.g. alerts and audit events). If nothing is decided, write "none yet" |
-| extra compose services | only what this service needs, from the TRD |
+| extra compose services | none: shared containers live only in identity-service's `infra/` (`docs/TRD.md` §1b) |
 
 Then delete the template comment at the top of `CLAUDE.md`. **Don't guess:** if a value isn't in the docs or the repo, ask.
 
@@ -58,7 +58,8 @@ Read `build.gradle`, `settings.gradle`, `gradle/wrapper/gradle-wrapper.propertie
 - Java version, Spring Boot version, Groovy DSL
 - Starters and libraries: JPA, **Flyway** (`flyway-core`, `flyway-database-postgresql`), PostgreSQL driver, Redis, **AMQP (RabbitMQ, not Kafka)**, Consul discovery + config, OpenFeign, Resilience4j, OAuth2 resource server, validation, Lombok, ModelMapper, AWS SDK S3, Micrometer tracing + Zipkin, springdoc, ShedLock, **Testcontainers** (+ `spring-boot-testcontainers`)
 - Config: `ddl-auto: validate` (not `update`), schema settings, Flyway schema, Jackson `SNAKE_CASE`, UTC time zone
-- Compose: `postgres:17`, RabbitMQ (not Kafka), Mailpit
+- Compose: in identity-service, `infra/` has `postgres:17`, RabbitMQ (not Kafka) and Mailpit. In any other service, the compose file has **only** the service and its Consul seed job on the external network `ledgervision-net`, with no shared containers and no copy of `infra/` (`docs/TRD.md` §1b)
+- Port and Consul name match `docs/TRD.md` §1b and the gateway's routes
 - `ApiResponse` has a `code` field, and `GlobalExceptionHandler` follows `spring.md` § Errors
 - Package structure (by feature)
 
