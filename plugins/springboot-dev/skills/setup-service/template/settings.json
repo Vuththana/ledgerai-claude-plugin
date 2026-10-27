@@ -9,7 +9,8 @@
     }
   },
   "enabledPlugins": {
-    "ledgerai@ledgerai": true
+    "ledgerai@ledgerai": true,
+    "springboot-dev@ledgerai": true
   },
   "permissions": {
     "allow": [

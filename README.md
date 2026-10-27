@@ -15,7 +15,7 @@ Each kind of information has one home, so nothing is written twice and nothing d
 
 **Skills never restate the docs or the rules.** A skill like "implement authentication" would just copy `docs/flow/authentication.md`, then drift from it. Instead, `implement-feature` walks through the build, and the flow plus the rules supply the content.
 
-Plugins can't ship `CLAUDE.md` or rules files: Claude Code only loads skills, agents, hooks and MCP servers from a plugin. That's why rules live in each repo.
+Plugins can't ship `CLAUDE.md` or rules files: Claude Code only loads skills, agents, hooks and MCP servers from a plugin. That's why rules live in each repo. For Spring Boot services, `/springboot-dev:setup-service` copies them into the repo from its template.
 
 ## The plugins
 
@@ -23,6 +23,7 @@ Plugins can't ship `CLAUDE.md` or rules files: Claude Code only loads skills, ag
 |---|---|---|
 | `ledgerai` | `ledgerai@ledgerai` | **every** repo |
 | `website-dev` | `website-dev@ledgerai` | web front-end repos (web-ui) |
+| `springboot-dev` | `springboot-dev@ledgerai` | Spring Boot service repos (identity, sales, finance, api-gateway) |
 
 ### 01. Requirements & Analysis
 
@@ -40,6 +41,17 @@ Plugins can't ship `CLAUDE.md` or rules files: Claude Code only loads skills, ag
 
 Components, forms, data tables, dashboards, API integration, authentication, roles, responsive and accessibility are **not skills**. They are web-ui rules (`ui-components.md`, `forms.md`, `data-tables.md`, `drag-and-drop.md`, `data-layer.md`, `nextjs.md`) plus the feature's flow doc.
 
+### 02–03. Backend implementation (Spring Boot)
+
+| Skill | Plugin | How | What it does |
+|---|---|---|---|
+| `setup-service` | springboot-dev | `/springboot-dev:setup-service [service]` | Installs `.claude/settings.json`, `CLAUDE.md`, `.claude/rules/` and the `docs` submodule in a service repo, fills them from `docs/TRD.md` §1a, and reports where the repo differs from the TRD |
+| `implement-feature` | springboot-dev | Auto | The backend build order: migration → entities → endpoints → events, jobs, emails → tests → `./gradlew build` → run the stack and `curl` each role → reviews |
+| `add-migration` | springboot-dev | Auto | A Flyway migration straight from the dictionary (types, NOT NULL, defaults, enums, unique, keys, indexes), only for tables this service owns |
+| `add-endpoint` | springboot-dev | Auto | One endpoint: DTOs with dictionary validation, service with role and branch scope, controller, error codes, messages and tests |
+
+Entities, security, error handling, ModelMapper, events and jobs are **not skills**. They are the Spring rules (`spring.md`, installed by `setup-service`) plus `docs/TRD.md`.
+
 ### 04. Security & Quality
 
 | Skill | Plugin | How | What it does |
@@ -52,12 +64,15 @@ Components, forms, data tables, dashboards, API integration, authentication, rol
 |---|---|---|---|
 | `write-unit-tests`, `write-component-tests`, `write-e2e-tests` | website-dev | Auto | **Placeholders.** There's no test runner yet. They say so, offer to draft a package request, and list what to cover |
 | `debug-frontend` | website-dev | Auto | How to debug, plus a symptom → cause → rule table for this stack |
+| `write-tests` | springboot-dev | Auto | JUnit 5 + Mockito unit tests and Testcontainers integration tests, with every error code and every role covered |
+| `debug-backend` | springboot-dev | Auto | How to debug, plus a symptom → cause → rule table for Spring Boot, Flyway, Keycloak, Consul and RabbitMQ |
 
 ### 06. Maintenance & Collaboration
 
 | Skill | Plugin | How | What it does |
 |---|---|---|---|
 | `review-pull-request` | website-dev | `/website-dev:review-pull-request [PR \| branch]` | Checks the diff against `TEAM-RULES.md` §9 and the matching `.claude/rules/`, plus mechanical checks (dictionary, `lib/mock` imports, dependencies, `docs/`, lint, build) |
+| `review-pull-request` | springboot-dev | `/springboot-dev:review-pull-request [PR \| branch]` | The same review for a service: dictionary, edited migrations, table ownership, scope in queries, dependencies, secrets, error format, `docs/`, tests, build |
 | `manage-dependencies` | ledgerai | Auto | Checks whether a package is needed, evaluates it, and fills in the `TEAM-RULES.md` §7 request template for you. Never installs before approval |
 | `sync-project-specs` | ledgerai | `/ledgerai:sync-project-specs` | Reports whether `docs/` is behind, what changed (MAJOR/MINOR/PATCH) and what it affects, and updates on request |
 
@@ -67,8 +82,9 @@ Use the built-in `/simplify` for refactoring and `/code-review` for a general bu
 
 | | Plugin | What it does |
 |---|---|---|
-| `dictionary-checker` agent | ledgerai | Compares types, forms, validation and mock data with `docs/data-dictionary/`, and reports mismatches. Never edits the dictionary |
+| `dictionary-checker` agent | ledgerai | Compares types, forms, validation, mock data, JPA entities, DTOs and Flyway migrations with `docs/data-dictionary/`, and reports mismatches. Never edits the dictionary |
 | ESLint hook | website-dev | After Claude edits a `.ts/.tsx/.js/.jsx/.mjs/.cjs` file, runs `node_modules/.bin/eslint --fix` on it. Does nothing without ESLint. Needs `jq` |
+| Compile-check hook | springboot-dev | After Claude edits a `.java` file, runs `./gradlew compileJava` (or `compileTestJava`) and hands any compiler errors back to Claude. Does nothing without a Gradle wrapper. Needs `jq` |
 
 ### Typical feature workflow
 
@@ -77,8 +93,11 @@ Use the built-in `/simplify` for refactoring and `/code-review` for a general bu
 /ledgerai:document-feature <feature>  plan → team approves
   build: implement-feature (rules load as files are touched)
 /ledgerai:review-feature <feature>    matches the flow?
-/website-dev:review-pull-request      follows the rules?
+/website-dev:review-pull-request      follows the rules?     (web-ui)
+/springboot-dev:review-pull-request   follows the rules?     (Spring services)
 ```
+
+A new Spring service repo starts with `/springboot-dev:setup-service` once.
 
 ---
 
@@ -112,6 +131,7 @@ Run `/plugin` and check that both show under **Installed**.
 /plugin marketplace add Vuththana/ledgerai-claude-plugin
 /plugin install ledgerai@ledgerai
 /plugin install website-dev@ledgerai      # web repos only
+/plugin install springboot-dev@ledgerai   # Spring Boot service repos only
 ```
 
 > **Private repo.** Claude Code clones it with your own git credentials. You need read access on GitHub (ask to be added as a collaborator) and a working login (`gh auth login`, or an SSH key / credential helper).
@@ -137,10 +157,17 @@ Only for you, in one repo: `{ "enabledPlugins": { "website-dev@ledgerai": false 
 
 ## Adding the plugins to a new repo
 
-1. Copy a template to `<repo>/.claude/settings.json`: `templates/web-project-settings.json` for a web front end (both plugins), `templates/backend/settings.json` for a Spring Boot service, or `templates/project-settings.json` for anything else (`ledgerai` only). Adjust the permissions.
+**Spring Boot service** (identity, sales, finance, api-gateway):
+
+1. Install the plugins once by hand (`/plugin install ledgerai@ledgerai` and `/plugin install springboot-dev@ledgerai`).
+2. Run `/springboot-dev:setup-service`. It installs the settings, `CLAUDE.md`, rules and `docs` submodule from `plugins/springboot-dev/skills/setup-service/template/`.
+3. Review and commit.
+
+**Anything else:**
+
+1. Copy a template to `<repo>/.claude/settings.json`: `templates/web-project-settings.json` for a web front end (both plugins), or `templates/project-settings.json` for anything else (`ledgerai` only). Adjust the permissions.
 2. Add the `docs` submodule at `docs/`.
 3. Write the repo's `CLAUDE.md` (commands, stack, architecture) and its `.claude/rules/`: the repo's version of `docs/TEAM-RULES.md`, plus its own coding standards.
-   - **Spring Boot service** (identity, sales, finance, api-gateway): copy `templates/backend/CLAUDE.md` to the repo root and `templates/backend/rules/` to `.claude/rules/`. Then replace every `<...>` placeholder with the service's details from `docs/TRD.md` §1a.
 4. Commit all of it.
 
 ---
@@ -162,11 +189,11 @@ A skill that only lists facts or conventions is really a rule or a doc. Move it.
 
 ```
 .claude-plugin/marketplace.json
-plugins/ledgerai/      .claude-plugin/plugin.json · agents/ · skills/<name>/SKILL.md   (6 skills)
-plugins/website-dev/   .claude-plugin/plugin.json · hooks/ · skills/<name>/SKILL.md    (6 skills)
-templates/             project-settings.json · web-project-settings.json
-templates/backend/     settings.json · CLAUDE.md · rules/ (project, workflow, packages, data-dictionary,
-                       language, feature-flows, spring)   for the Spring Boot services
+plugins/ledgerai/        .claude-plugin/plugin.json · agents/ · skills/<name>/SKILL.md   (6 skills)
+plugins/website-dev/     .claude-plugin/plugin.json · hooks/ · skills/<name>/SKILL.md    (6 skills)
+plugins/springboot-dev/  .claude-plugin/plugin.json · hooks/ · skills/<name>/SKILL.md    (7 skills)
+                         skills/setup-service/template/   settings.json · CLAUDE.md · rules/ for a service repo
+templates/               project-settings.json · web-project-settings.json
 ```
 
 Skills sit directly at `skills/<name>/SKILL.md`, because Claude Code doesn't look in subfolders. The 01–06 grouping lives in this README.
@@ -194,6 +221,7 @@ Hooks run in every repo that enables the plugin. Make them check that they apply
 claude plugin validate ../ledgerai-claude-plugin
 claude plugin validate ../ledgerai-claude-plugin/plugins/ledgerai
 claude plugin validate ../ledgerai-claude-plugin/plugins/website-dev
+claude plugin validate ../ledgerai-claude-plugin/plugins/springboot-dev
 claude --plugin-dir ../ledgerai-claude-plugin/plugins/ledgerai \
        --plugin-dir ../ledgerai-claude-plugin/plugins/website-dev
 ```
@@ -210,7 +238,8 @@ The icon and license warnings only matter for the public plugin directory, so ig
 
 | Plugin | Version | Change |
 |---|---|---|
-| templates | — | New `templates/backend/`: settings, `CLAUDE.md` skeleton and `.claude/rules/` for the Spring Boot services, with Spring coding standards (`spring.md`) built from `docs/TRD.md` v2.0.0 |
+| `springboot-dev` | 0.1.0 | New: `setup-service` (installs the service template: settings, `CLAUDE.md`, `.claude/rules/` incl. `spring.md`, built from `docs/TRD.md` v2.0.0), `implement-feature`, `add-migration`, `add-endpoint`, `write-tests`, `debug-backend`, `review-pull-request`, and the compile-check hook |
+| `ledgerai` | 0.4.0 | `dictionary-checker` also checks Java entities, DTOs and Flyway migrations |
 | `ledgerai` | 0.3.0 | Workflow-only skills that point to the docs: `analyze-requirements`, `document-feature` (was `/ledgerai:plan-feature`), `identify-edge-cases`, `review-feature`, `manage-dependencies` (uses the `TEAM-RULES.md` §7 template), `sync-project-specs` |
 | `website-dev` | 0.2.0 | Workflow-only skills: `implement-feature`, `debug-frontend`, `review-pull-request`, three test placeholders. Standards moved to web-ui `.claude/rules/`. Removed `nextjs-16`, `hairline-ui`, `mock-api-layer` |
 | `ledgerai` | 0.2.0 | Added `dictionary-checker` agent and `/ledgerai:plan-feature`. ESLint hook moved to `website-dev` |

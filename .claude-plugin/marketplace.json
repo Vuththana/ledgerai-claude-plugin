@@ -15,6 +15,11 @@
       "name": "website-dev",
       "description": "LedgerVision web front-end workflow skills: implementing a feature, debugging, PR review and test placeholders, plus an ESLint --fix hook",
       "source": "./plugins/website-dev"
+    },
+    {
+      "name": "springboot-dev",
+      "description": "LedgerVision Spring Boot service workflow skills: set up a service repo, implement a feature, Flyway migrations, endpoints, tests, debugging and PR review, plus a compile-check hook",
+      "source": "./plugins/springboot-dev"
     }
   ]
 }

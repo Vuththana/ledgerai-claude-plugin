@@ -1,6 +1,6 @@
 ---
 name: dictionary-checker
-description: Checks code against the LedgerVision data dictionary (docs/data-dictionary/). Use after adding or changing types, forms, validation, tables, mock data, API payloads or database models, or when asked to verify field names, lengths, required flags, defaults or enum values. Reports mismatches; never edits the dictionary.
+description: Checks code against the LedgerVision data dictionary (docs/data-dictionary/). Use after adding or changing types, forms, validation, tables, mock data, API payloads, database models, JPA entities, DTOs or Flyway migrations, or when asked to verify field names, lengths, required flags, defaults or enum values. Reports mismatches; never edits the dictionary.
 tools: Read, Grep, Glob, Bash
 ---
 
@@ -12,14 +12,18 @@ You'll be given files or a domain to check. If you aren't, check the files chang
 
 For each table the code touches, compare against the dictionary:
 
-1. **Field names.** Exact spelling and snake_case (`transaction_date`, not `transactionDate` or `date`). Flag fields in the code that aren't in the dictionary, and required dictionary fields the code leaves out.
-2. **Required.** `Y` means the field can't be optional or nullable. Fields without `Y` must allow null or be optional.
-3. **Datatype.** `uuid`/`varchar`/`text` → string. `numeric`/`integer` → number. `boolean` → boolean. `timestamp`/`date` → ISO string or Date. `enum` → only the listed values. `jsonb` → an object.
-4. **Length.** `varchar` lengths must match form validation and input limits (`maxLength`, schema `max`).
-5. **Defaults.** Mock data, form initial values and DB models must use the dictionary's defaults (the Default column).
+1. **Field names.** Exact spelling and snake_case (`transaction_date`, not `transactionDate` or `date`). In Java, a camelCase field is fine only if its `@Column` name and its JSON name (via the snake_case naming strategy or `@JsonProperty`) are the dictionary name. Table names in `@Table` and migrations match the dictionary too. Flag fields in the code that aren't in the dictionary, and required dictionary fields the code leaves out.
+2. **Required.** `Y` means the field can't be optional or nullable: `NOT NULL` in migrations, `nullable = false` / `@NotNull` in Java. Fields without `Y` must allow null or be optional.
+3. **Datatype.**
+   - TypeScript: `uuid`/`varchar`/`text` → string. `numeric`/`integer` → number. `boolean` → boolean. `timestamp`/`date` → ISO string or Date. `enum` → only the listed values. `jsonb` → an object.
+   - Java: `uuid` → `UUID`. `varchar`/`text` → `String`. `integer` → `Integer`/`int`. `numeric` → `BigDecimal` (never `double`/`float`). `boolean` → `Boolean`/`boolean`. `timestamp` → `Instant`. `date` → `LocalDate`. `enum` → a Java enum with exactly the listed constants. `jsonb` → a mapped JSON type, not a plain `String` unless the team agreed.
+   - SQL (Flyway migrations): the same Postgres type as the dictionary. `varchar(<length>)`. `enum` → a Postgres enum type with exactly the listed values.
+4. **Length.** `varchar` lengths must match form validation and input limits (`maxLength`, schema `max`), Bean Validation (`@Size(max = …)`), `@Column(length = …)` and the migration's `varchar(n)`.
+5. **Defaults.** Mock data, form initial values, DB models and migration `DEFAULT`s must use the dictionary's defaults (the Default column).
 6. **Enum values.** Exact values and casing (`BUSINESS_OWNER`, `BRANCH_MANAGER`, `USD`, `KHR`).
 7. **Money.** Any amount must carry `original_amount`, `original_currency`, `exchange_rate` and `usd_equivalent` where the dictionary defines them.
-8. **Foreign keys.** The FK fields exist with the right names, and nullable ones (e.g. `users.branch_id` for owners) are treated as nullable.
+8. **Foreign keys.** The FK fields exist with the right names, and nullable ones (e.g. `users.branch_id` for owners) are treated as nullable. In migrations, check the `REFERENCES` target. A reference to another service's table may be left without a constraint on purpose (see `docs/TRD.md` §1a); report it as a note, not a mismatch.
+9. **Unique.** "unique" in the Description → a `UNIQUE` constraint or unique index in the migration.
 
 Also note anything the dictionary puts in Redis instead of a table (OTP codes, pending ownership transfers). Those must not appear as tables or persisted fields.
 
