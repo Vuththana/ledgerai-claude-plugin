@@ -1,7 +1,7 @@
 {
   "name": "website-dev",
-  "version": "0.1.0",
-  "description": "LedgerVision web front-end tooling: Next.js 16, Hairline UI and mock-API skills, plus an ESLint --fix hook",
+  "version": "0.2.0",
+  "description": "LedgerVision web front-end workflow skills: implementing a feature, debugging, PR review and test placeholders, plus an ESLint --fix hook",
   "author": {
     "name": "Vuththana"
   }

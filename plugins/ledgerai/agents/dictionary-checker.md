@@ -16,7 +16,7 @@ For each table the code touches, compare against the dictionary:
 2. **Required.** `Y` means the field can't be optional or nullable. Fields without `Y` must allow null or be optional.
 3. **Datatype.** `uuid`/`varchar`/`text` → string. `numeric`/`integer` → number. `boolean` → boolean. `timestamp`/`date` → ISO string or Date. `enum` → only the listed values. `jsonb` → an object.
 4. **Length.** `varchar` lengths must match form validation and input limits (`maxLength`, schema `max`).
-5. **Defaults.** Mock data, form initial values and DB models must use the dictionary's defaults (e.g. `language` → `English`, `exchange_rate` → `4100`).
+5. **Defaults.** Mock data, form initial values and DB models must use the dictionary's defaults (the Default column).
 6. **Enum values.** Exact values and casing (`BUSINESS_OWNER`, `BRANCH_MANAGER`, `USD`, `KHR`).
 7. **Money.** Any amount must carry `original_amount`, `original_currency`, `exchange_rate` and `usd_equivalent` where the dictionary defines them.
 8. **Foreign keys.** The FK fields exist with the right names, and nullable ones (e.g. `users.branch_id` for owners) are treated as nullable.
