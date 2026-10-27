@@ -238,6 +238,7 @@ The icon and license warnings only matter for the public plugin directory, so ig
 
 | Plugin | Version | Change |
 |---|---|---|
+| `springboot-dev` | 0.2.0 | Follows `docs/TRD.md` v3.0.0: `ApiResponse` envelope with `code`, one schema per service, OpenFeign + Resilience4j, Consul KV config, S3/RustFS, Zipkin, springdoc. `setup-service` checks for them, and `debug-backend` covers Consul, Feign and schemas |
 | `springboot-dev` | 0.1.0 | New: `setup-service` (installs the service template: settings, `CLAUDE.md`, `.claude/rules/` incl. `spring.md`, built from `docs/TRD.md` v2.0.0), `implement-feature`, `add-migration`, `add-endpoint`, `write-tests`, `debug-backend`, `review-pull-request`, and the compile-check hook |
 | `ledgerai` | 0.4.0 | `dictionary-checker` also checks Java entities, DTOs and Flyway migrations |
 | `ledgerai` | 0.3.0 | Workflow-only skills that point to the docs: `analyze-requirements`, `document-feature` (was `/ledgerai:plan-feature`), `identify-edge-cases`, `review-feature`, `manage-dependencies` (uses the `TEAM-RULES.md` §7 template), `sync-project-specs` |

@@ -19,7 +19,7 @@ Its contract comes from the approved plan and the flow: method, path, who may ca
   - Enums → the Java enum type
   - Extra flow rules (password policy, code format) → a custom validator or a check in the service
 - **Never accept protected fields from the client:** `user_id`, `business_id`, `role_id`, `is_active`, timestamps, `usd_equivalent`. A manager's `branch_id` is never accepted either.
-- **Response DTO:** the dictionary field names via the global snake_case naming. Never secrets (`*_encrypted`, tokens, codes).
+- **Response DTO:** the dictionary field names via the global snake_case naming. Never secrets (`*_encrypted`, tokens, codes). It goes in the envelope's `data`.
 
 ## 2. Service (`<feature>/service`)
 
@@ -34,7 +34,8 @@ Its contract comes from the approved plan and the flow: method, path, who may ca
 ## 3. Controller (`<feature>/controller`)
 
 - Path under `/api/v1`. `@Valid` on the request body. Get the current user from the security context.
-- Thin: validate, call the service, return the DTO with the right status (`201` + body for a create, `204` with no body). See `spring.md` § JSON and API.
+- Thin: validate, call the service, and return `ResponseEntity<ApiResponse<T>>` built with `ApiResponse.ok(...)`, using the right status (`201` for a create; `200` with `data = null` when there's nothing to return). See `spring.md` § JSON and API.
+- Add `@Tag` / `@Operation` for springdoc.
 
 ## 4. Messages
 
@@ -44,8 +45,8 @@ Add each new error `code`'s user message to `messages.properties`, in the flow's
 
 Follow the `write-tests` skill for this endpoint. It needs at least:
 
-- the happy path, checking the response body and the database
-- `400 VALIDATION_FAILED` with the right `field_errors` key
+- the happy path, checking the envelope (`success = true`, `data`) and the database
+- `400 VALIDATION_FAILED` with the right field key in `data`
 - each error `code` in the contract
 - each role: owner, manager of the same branch, manager of another branch (`404` or `403`), deactivated user (`401`)
 

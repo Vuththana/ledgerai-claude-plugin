@@ -32,7 +32,7 @@ Follow the `add-endpoint` skill for each endpoint in the plan: DTOs and validati
 ## 4. Everything else the plan lists
 
 - **Redis keys** with the flow's names and TTLs.
-- **Calls to other services** through Consul with client credentials.
+- **Calls to other services** through OpenFeign clients with Resilience4j (token forwarding, or client credentials in jobs and listeners).
 - **Events** published after commit, and idempotent consumers.
 - **Emails** whose text lives in `messages.properties`.
 - **Scheduled jobs** with ShedLock.
@@ -55,9 +55,9 @@ Follow the `write-tests` skill: unit tests for the rules, and integration tests 
 
 Then run it for real:
 
-1. `docker compose up -d`, then `./gradlew bootRun` (in the background).
+1. Start the infrastructure with the compose command in `CLAUDE.md`, then `./gradlew bootRun` (in the background).
 2. Wait for `GET /actuator/health` to report `UP`.
-3. Call each new endpoint with `curl` as each role. Seeded users or tokens come from the repo's README or the plan.
+3. Call each new endpoint with `curl` as each role, directly and through the api-gateway. Seeded users or tokens come from the repo's README or the plan. Check the response envelope (`success`, `code`, `data`).
 4. Check the responses, the database rows and any emails (Mailpit).
 5. Stop the app afterwards.
 

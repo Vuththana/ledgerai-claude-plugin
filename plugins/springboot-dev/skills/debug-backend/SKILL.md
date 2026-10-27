@@ -20,11 +20,14 @@ description: Investigate and fix LedgerVision Spring Boot service bugs — start
 | Symptom | Likely cause | Rule |
 |---|---|---|
 | `FlywayValidateException: checksum mismatch` / "applied migration not resolved" | A migration that already ran was edited or renamed. Restore it and add a new one | `spring.md` § Persistence |
-| Flyway: "non-empty schema without schema history table" | Shared DB: `baseline-on-migrate` missing, or the history table isn't `flyway_schema_history_<service>` | `spring.md` § Persistence |
+| Flyway: "non-empty schema without schema history table", or tables land in `public` | `spring.flyway.schemas` / `currentSchema` / `hibernate.default_schema` don't all name the service's schema, or old tables from `ddl-auto: update` are still there | `spring.md` § Persistence |
+| Startup fails reading config, or a property is `null` | Consul isn't running, or the KV keys weren't seeded (`config/application/data`, `config/<service>/data`). Check the `consul-seed` containers and the Consul UI (http://localhost:8500) | `spring.md` § Configuration |
+| `CallNotPermittedException` or a Feign timeout | The circuit breaker is open because the other service is down or slow. Check it in Consul and Zipkin. The fallback must return a clear error, not fake data | `spring.md` § Transactions, other services and events |
+| `401` from another service on a call made by a job or listener | No user token to forward there. Use this service's client-credentials token | `docs/TRD.md` §3d |
 | `Schema-validation: missing column` / `wrong column type` | Entity and migration disagree. The dictionary decides which one is wrong | `data-dictionary.md` |
 | `column "x" is of type <enum> but expression is of type character varying` | Postgres enum not mapped: add `@JdbcType(PostgreSQLEnumJdbcType.class)` | `spring.md` § Persistence |
 | Times off by 7 hours | `hibernate.jdbc.time_zone=UTC` missing, or `LocalDateTime` used with the server's zone (Asia/Phnom_Penh is UTC+7) | `spring.md` § Persistence |
-| `401` on every request | The token's `iss` (e.g. `localhost:8080`) differs from the configured `issuer-uri` (e.g. `keycloak:8080` inside Docker), or the audience is missing | `spring.md` § Security |
+| `401` on every request | The token's `iss` (e.g. `localhost:9090`) differs from the configured `issuer-uri`, or `jwk-set-uri` isn't reachable from inside Docker, or the audience is missing | `spring.md` § Security |
 | `401 SESSION_REVOKED` straight after sign-in | The token's `iat` is in the same second as the revocation time: compare with `>=`, or check clock skew | `docs/flow/authentication.md` §11 |
 | `403` on `POST` with no message | CSRF is on: disable it for the stateless API | `spring.md` § Security |
 | Manager sees another branch's data | A repository method without `branch_id`, or the scope taken from the request instead of the current user | `data-dictionary.md` § Roles |
@@ -37,6 +40,7 @@ description: Investigate and fix LedgerVision Spring Boot service bugs — start
 | Scheduled job runs on every instance | `@EnableSchedulerLock` or `@SchedulerLock` missing | `spring.md` § Jobs |
 | Testcontainers: "Could not find a valid Docker environment" | Docker isn't running, or the user can't reach the socket | — |
 | An error message leaks SQL or a stack trace | The handler returns `ex.getMessage()`. Use `messages.properties` and log the details | `spring.md` § Errors |
+| The web UI can't tell two errors apart | The handler sends no `code`, or the same code for both. Every expected failure needs its own `code` | `spring.md` § Errors |
 
 ## After the fix
 

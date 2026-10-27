@@ -44,7 +44,8 @@ Replace every `<...>` in the installed `CLAUDE.md` and `.claude/rules/project.md
 | owned tables | `docs/TRD.md` §1a |
 | base package | the existing `src/main/java` package, else `com.ledgervision.<service>` |
 | port | `server.port` in `application.yml` / `application.properties`, else ask |
-| Flyway history table | `flyway_schema_history_<service>` (`docs/TRD.md` §5) |
+| schema | the service's schema in `docs/TRD.md` §1a (`identity`, `sales`, `finance`) |
+| compose command | the repo's real compose file(s), e.g. `infra/docker-compose.yml` |
 | events published / consumed | `docs/TRD.md` §1a rules (e.g. alerts and audit events). If nothing is decided, write "none yet" |
 | extra compose services | only what this service needs, from the TRD |
 
@@ -52,11 +53,13 @@ Then delete the template comment at the top of `CLAUDE.md`. **Don't guess:** if 
 
 ## 5. Compare the repo with the TRD
 
-Read `build.gradle`, `settings.gradle`, `gradle/wrapper/gradle-wrapper.properties` and `application.yml`, and report each difference from `docs/TRD.md` §2–§5:
+Read `build.gradle`, `settings.gradle`, `gradle/wrapper/gradle-wrapper.properties`, `application.yml`, the Consul config files (`consul/*.yml`, `infra/consul/*.yml`) and the compose files. Report each difference from `docs/TRD.md` §2–§5:
 
 - Java version, Spring Boot version, Groovy DSL
-- Starters and libraries: JPA, Flyway, PostgreSQL driver, Redis, AMQP, Consul discovery, OAuth2 resource server, validation, Lombok, ModelMapper, ShedLock, Testcontainers
-- Flyway history table, `ddl-auto=validate`, Jackson `SNAKE_CASE`, UTC time zone
+- Starters and libraries: JPA, **Flyway** (`flyway-core`, `flyway-database-postgresql`), PostgreSQL driver, Redis, **AMQP (RabbitMQ, not Kafka)**, Consul discovery + config, OpenFeign, Resilience4j, OAuth2 resource server, validation, Lombok, ModelMapper, AWS SDK S3, Micrometer tracing + Zipkin, springdoc, ShedLock, **Testcontainers** (+ `spring-boot-testcontainers`)
+- Config: `ddl-auto: validate` (not `update`), schema settings, Flyway schema, Jackson `SNAKE_CASE`, UTC time zone
+- Compose: `postgres:17`, RabbitMQ (not Kafka), Mailpit
+- `ApiResponse` has a `code` field, and `GlobalExceptionHandler` follows `spring.md` § Errors
 - Package structure (by feature)
 
 **Don't change `build.gradle`.** Missing dependencies need a package request (`.claude/rules/packages.md`), so list them for the user, and offer the `manage-dependencies` skill to draft the requests.

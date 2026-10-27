@@ -20,7 +20,7 @@ Don't restate the docs in code, rules or skills. Point to the flow section inste
 ## Commands
 
 ```bash
-docker compose up -d          # Postgres 17, Redis, RabbitMQ, Consul, Keycloak, Mailpit (+ <anything else this service needs>)
+docker compose -f infra/docker-compose.yml up -d   # Postgres 17, Redis, RabbitMQ, Consul (+ config seed), Keycloak, RustFS, Zipkin, Mailpit, api-gateway <adjust to the repo>
 ./gradlew bootRun             # run the service, http://localhost:<port>
 ./gradlew build               # compile + all tests (integration tests need Docker for Testcontainers)
 ./gradlew test --tests '<pattern>'   # one test class or method
@@ -28,14 +28,15 @@ docker compose up -d          # Postgres 17, Redis, RabbitMQ, Consul, Keycloak, 
 
 ## Stack
 
-Java 21, Spring Boot 3.5.16, Gradle (Groovy DSL), Spring Data JPA + Flyway, PostgreSQL 17 (one shared database), Redis, RabbitMQ, Consul, Keycloak (resource server), Lombok, ModelMapper, JUnit 5 + Mockito + Testcontainers. Settled in `docs/TRD.md` §2. Coding standards: `.claude/rules/spring.md`.
+Java 21, Spring Boot 3.5.16, Spring Cloud, Gradle (Groovy DSL), Spring Data JPA + Flyway, PostgreSQL 17 (one database, schema `<schema>`), Redis, RabbitMQ, Consul (discovery + KV config), OpenFeign + Resilience4j, Keycloak (resource server), S3-compatible storage (RustFS), Zipkin, springdoc-openapi, Lombok, ModelMapper, JUnit 5 + Mockito + Testcontainers. Settled in `docs/TRD.md` §2. Coding standards: `.claude/rules/spring.md`.
 
 ## This service
 
 - **Features:** <features from `docs/TRD.md` §1a, with their flow files>
 - **Owns tables:** <tables from `docs/TRD.md` §1a>. Only these get migrations and writes here.
 - **Base package:** `com.ledgervision.<service>`
-- **Flyway history table:** `flyway_schema_history_<service>`
+- **Database schema:** `<schema>` (Flyway migrates it and keeps its history there)
+- **Configuration:** Consul KV. Shared: `infra/consul/application.yml` → `config/application/data`. This service: `consul/<service>.yml` → `config/<service>/data` (+ `-docker`)
 - **Consul service name:** `<service-name>`. Behind the gateway at `/api/v1/<route>/**`.
 - **Events:** publishes <...> · consumes <...>
 
@@ -43,5 +44,5 @@ Java 21, Spring Boot 3.5.16, Gradle (Groovy DSL), Spring Data JPA + Flyway, Post
 
 - Package by feature: `com.ledgervision.<service>.<feature>.{controller,service,repository,dto,entity}`. Cross-cutting code in `com.ledgervision.<service>.common` until it moves to `ledgervision-common`.
 - Every request: the JWT is validated (Keycloak), then the current user is loaded from `users`. Role, `business_id` and `branch_id` come from that row, never from token claims (`docs/TRD.md` §3b).
-- Errors use the shared format `{ status, code, message, field_errors }` (`docs/TRD.md` §3a).
-- Other services are reached through Consul with this service's own Keycloak client (client credentials) or through RabbitMQ events (`docs/TRD.md` §3d).
+- Every response is the envelope `ApiResponse { success, code, message, data, timestamp }` (`docs/TRD.md` §3a).
+- Other services are reached through OpenFeign clients by Consul name (the user's token forwarded; client credentials in jobs and listeners), or through RabbitMQ events (`docs/TRD.md` §3d).

@@ -11,6 +11,7 @@ Tables: **$ARGUMENTS** (if empty: the tables in the approved plan).
 ## 1. Check before writing
 
 - **Ownership:** every table must belong to this service in `docs/TRD.md` §1a. If one doesn't, stop. Another service migrates it.
+- **Schema:** everything goes in this service's schema (`identity`, `sales`, `finance`). Flyway is configured with `spring.flyway.schemas=<schema>`, so write unqualified names (`CREATE TABLE users …`), not `public.` or another schema.
 - **Already there?** Search `src/main/resources/db/migration/` for the table. If it exists, this is a change: write a new `ALTER` migration.
 - **Never edit a migration that has already run** (merged, or applied on any database). Always add a new file.
 - The dictionary must already have the field. If the plan needs one that isn't there, stop and propose it in the docs repo (`data-dictionary.md`).
@@ -33,12 +34,12 @@ Read the table in `docs/data-dictionary/<file>.md`, column by column, in the dic
 | `text`, `integer`, `boolean`, `date`, `jsonb` | the same name |
 | `numeric` | `numeric`. Precision is still open (`docs/TRD.md` Q13): don't invent one |
 | `timestamp` | `timestamp` (holds UTC) |
-| `enum` + "values: A, B" | `CREATE TYPE <table>_<field> AS ENUM ('A', 'B');`, created before the table. Values exactly as written, in the same order |
+| `enum` + "values: A, B" | `CREATE TYPE <table>_<field> AS ENUM ('A', 'B');` in this schema, created before the table. Values exactly as written, in the same order |
 | Required `Y` | `NOT NULL` |
 | Default | `DEFAULT <value>`: `current_timestamp`, `true`/`false`, numbers, `'<enum value>'` |
 | "unique" in Description | `UNIQUE` constraint (case-insensitive fields like email: store lowercased) |
 | FK + Reference, **same service** | `REFERENCES <table>(<pk>)` |
-| FK + Reference, **another service's table** | Keep the `uuid` column and an index, but no `REFERENCES` unless the team has agreed cross-service FKs. List it under "Questions" |
+| FK + Reference, **another service's table** (another schema) | Keep the `uuid` column and an index, but no `REFERENCES` across schemas unless the team has agreed it. List it under "Questions" |
 | "one per …" rules (e.g. one main branch per business) | partial unique index, e.g. `CREATE UNIQUE INDEX … ON branches (business_id) WHERE is_main_branch` |
 
 Also:

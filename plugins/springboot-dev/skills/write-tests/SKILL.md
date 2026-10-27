@@ -22,9 +22,10 @@ Create these once per repo and reuse them:
 
 - **`AbstractIT`:**
   - Containers `postgres:17`, Redis and RabbitMQ (only those the service uses), static so all tests share them, wired with `@ServiceConnection` (or `@DynamicPropertySource` for Redis if needed).
+  - A `test` profile (`src/test/resources/application-test.yml`) with Consul turned off (`spring.cloud.consul.enabled=false`, `spring.config.import=optional:consul:`), the service's schema and Flyway schema, and `ddl-auto: validate`.
   - Flyway runs the real migrations, so `ddl-auto=validate` is tested too.
   - Clean up between tests: truncate this service's tables and flush Redis in `@BeforeEach`. Don't rely on test order.
-- **Fakes for the outside world:** a `@TestConfiguration` with `@Primary` beans for Keycloak, SMTP (capture the sent mails), other services' clients, and the LLM. Tests never call real external systems.
+- **Fakes for the outside world:** `@MockitoBean` for other services' Feign clients and the S3 client, and a `@TestConfiguration` with `@Primary` beans for Keycloak and SMTP (capture the sent mails). Tests never call real external systems.
 - **Signed-in requests:** `spring-security-test`'s `jwt()` post-processor with `sub` = the seeded user's `user_id` (and the issued-at time when testing revocation). The current-user filter then loads the real `users` row, so `is_active`, scope and role are tested for real.
 - **Seed helpers:** small builders that insert an owner, a manager per branch, a business with two branches, and so on, using the dictionary's defaults.
 
@@ -32,9 +33,9 @@ Create these once per repo and reuse them:
 
 For each endpoint in the plan:
 
-1. **Happy path:** check the status, the body (dictionary field names, snake_case) and the database rows.
-2. **Validation:** `400 VALIDATION_FAILED`, with `field_errors` keyed by the right field.
-3. **Every error `code`** in the plan, each with its status.
+1. **Happy path:** check the status, the envelope (`success = true`, `code = null`), `data` (dictionary field names, snake_case) and the database rows.
+2. **Validation:** `400`, `success = false`, `code = VALIDATION_FAILED`, with `data` keyed by the right field.
+3. **Every error `code`** in the plan, each with its status and `success = false`.
 4. **Roles and scope:**
    - owner, all branches
    - owner, one branch (where it applies)
