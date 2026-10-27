@@ -238,6 +238,7 @@ The icon and license warnings only matter for the public plugin directory, so ig
 
 | Plugin | Version | Change |
 |---|---|---|
+| `springboot-dev` | 0.5.0 | `spring.md` template follows docs v4.3.0: success `code` is the HTTP status name (`ApiResponse.ok` / `created`), no `204` without a body |
 | `ledgerai` | 0.6.0 | Package requests are for web-ui only (docs v3.1.0): `manage-dependencies` and `document-feature` stop asking backend repos for one |
 | `springboot-dev` | 0.4.0 | The same for the backend: `packages.md` and `workflow.md` templates, `setup-service`, `implement-feature`, `write-tests`, `review-pull-request` |
 | `ledgerai` | 0.5.0 | `dictionary-checker` checks JSONB content against `docs/data-dictionary/jsonb-shapes.md` (docs v4.1.0): mismatches for ✅ shapes, notes for 📝 proposed ones. `analyze-requirements` reads the shapes too |

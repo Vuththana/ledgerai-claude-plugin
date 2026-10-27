@@ -46,9 +46,9 @@ com.ledgervision.<service>
 
 - Jackson uses `PropertyNamingStrategies.SNAKE_CASE` globally, so Java `usdEquivalent` is `usd_equivalent` on the wire. Each JSON name must be the dictionary name (`data-dictionary.md`).
 - Every path starts with `/api/v1` (`docs/TRD.md` §3a).
-- **Every response is the envelope** `ApiResponse { success, code, message, data, timestamp }` (`docs/TRD.md` §3a). Controllers return `ResponseEntity<ApiResponse<T>>` built with `ApiResponse.ok(...)`. Never a bare DTO or a different wrapper.
+- **Every response is the envelope** `ApiResponse { success, code, message, data, timestamp }` (`docs/TRD.md` §3a). Controllers return `ResponseEntity<ApiResponse<T>>` built with `ApiResponse.ok(...)` or `ApiResponse.created(...)`, which set `code` to the HTTP status name (`OK`, `CREATED`; docs v4.3.0). Never a bare DTO or a different wrapper.
 - API docs: springdoc-openapi. Give each controller a `@Tag` and each endpoint an `@Operation` summary, so the web UI team can read the contract in Swagger UI.
-- Status codes: `201` created, `204` no body, `400` validation, `401` not signed in / revoked / deactivated, `403` wrong role, `404` not found **or outside the caller's scope**, `409` conflict, `410` expired link, `429` limits and cooldowns.
+- Status codes: `200` OK, `201` created (no `204`: every endpoint returns the envelope), `400` validation, `401` not signed in / revoked / deactivated, `403` wrong role, `404` not found **or outside the caller's scope**, `409` conflict, `410` expired link, `429` limits and cooldowns.
 - Timestamps are ISO-8601 in UTC.
 
 ## Errors
