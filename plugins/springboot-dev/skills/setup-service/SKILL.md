@@ -62,13 +62,13 @@ Read `build.gradle`, `settings.gradle`, `gradle/wrapper/gradle-wrapper.propertie
 - `ApiResponse` has a `code` field, and `GlobalExceptionHandler` follows `spring.md` § Errors
 - Package structure (by feature)
 
-**Don't change `build.gradle`.** Missing dependencies need a package request (`.claude/rules/packages.md`), so list them for the user, and offer the `manage-dependencies` skill to draft the requests.
+**Don't change `build.gradle` here.** List the missing dependencies for the user. No package request is needed for backend repos (`.claude/rules/packages.md`): they're added by the feature that first needs them.
 
 ## 6. Report
 
 - Files created, merged, or skipped.
 - Placeholders still open, and why.
-- Differences from the TRD, and the package requests needed.
+- Differences from the TRD, and the dependencies still missing.
 - Next step: `/ledgerai:document-feature <feature>` for the first feature.
 
 Don't commit unless the user asks.

@@ -35,7 +35,7 @@ Cover every item `TEAM-RULES.md` §3 requires, using this layout. Reference doc 
 5. **Files:** what to create or change, following `CLAUDE.md` and the rules.
 6. **Steps:** in build order, each small enough to review.
 7. **Edge cases:** from step 2.4.
-8. **Packages:** any needed, with a drafted request (`manage-dependencies`). Default to none.
+8. **Packages:** any needed, and why. In `web-ui`, with a drafted request (`manage-dependencies`). Default to none.
 9. **Verification:** commands to run and what to check, per role.
 10. **Questions and conflicts.**
 

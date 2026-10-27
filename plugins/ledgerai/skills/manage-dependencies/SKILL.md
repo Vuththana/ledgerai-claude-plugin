@@ -1,13 +1,14 @@
 ---
 name: manage-dependencies
-description: Check whether a new package is really needed, evaluate it, and draft the LedgerVision package request report before anything is installed, upgraded or removed. Use whenever a task seems to need a library that isn't in the project, or someone asks to add, upgrade or remove a dependency.
+description: Check whether a new package is really needed and evaluate it. In web-ui, draft the LedgerVision package request report before anything is installed, upgraded or removed; backend repos and ai-service need no request. Use whenever a task seems to need a library that isn't in the project, or someone asks to add, upgrade or remove a dependency.
 ---
 
 # Manage dependencies
 
-The rule is in `docs/TEAM-RULES.md` §7 (and the repo's own packages rule, e.g. `.claude/rules/packages.md`): **nothing is installed until its package request is approved.** The person who needs the package submits the report. This skill gathers the facts and drafts it for them.
+The rule is in `docs/TEAM-RULES.md` §7 (and the repo's own packages rule, e.g. `.claude/rules/packages.md`):
 
-Never run an install command or change dependencies until the user says the request was approved.
+- **`web-ui`:** nothing is installed until its package request is approved. The person who needs the package submits the report. This skill gathers the facts and drafts it for them. Never run an install command or change dependencies until the user says the request was approved.
+- **Backend repos and `ai-service`:** no package request (since docs v3.1.0). Still do steps 1 and 2, add the dependency with the repo's build tool, and list it in the PR description. Never change the stack versions settled in `docs/TRD.md` §2.
 
 ## 1. Is it needed?
 

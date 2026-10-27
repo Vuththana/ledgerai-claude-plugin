@@ -1,6 +1,6 @@
 {
   "name": "ledgerai",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Team-wide LedgerVision workflow skills for every repo: requirements, feature plans, edge cases, feature review, package requests and spec sync, plus the data dictionary checker agent",
   "author": {
     "name": "Vuththana"

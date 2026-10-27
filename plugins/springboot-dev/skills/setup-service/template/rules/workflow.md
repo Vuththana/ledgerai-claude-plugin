@@ -19,7 +19,7 @@ Don't write code for a feature until its plan is written and approved.
    - Redis keys, scheduled jobs and emails, if any
    - the tables and fields you will use, by their dictionary names
    - who can do what (`BUSINESS_OWNER` / `BRANCH_MANAGER`) and how branch scope is applied
-   - any new dependency you need, with its package request (see `packages.md`)
+   - any new dependency you need, and why (see `packages.md`)
    - questions or conflicts you found in the flow, the dictionary or the TRD
 3. **Get the plan approved**, then build it.
 4. If the plan has to change partway through, update it and tell the team before you continue.

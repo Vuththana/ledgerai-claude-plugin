@@ -5,7 +5,7 @@ description: Write unit and integration tests for a LedgerVision Spring Boot ser
 
 # Write tests (Spring Boot)
 
-Tools are settled in `docs/TRD.md` §8: **JUnit 5 + Mockito** for unit tests, **Testcontainers** for integration tests. If `build.gradle` doesn't have them yet (`spring-boot-starter-test`, `spring-security-test`, `spring-boot-testcontainers`, `org.testcontainers:postgresql`, `org.testcontainers:junit-jupiter`, plus the Redis/RabbitMQ containers you need), stop and draft package requests (`manage-dependencies`). Don't add them yourself.
+Tools are settled in `docs/TRD.md` §8: **JUnit 5 + Mockito** for unit tests, **Testcontainers** for integration tests. If `build.gradle` doesn't have them yet (`spring-boot-starter-test`, `spring-security-test`, `spring-boot-testcontainers`, `org.testcontainers:postgresql`, `org.testcontainers:junit-jupiter`, plus the Redis/RabbitMQ containers you need), add them (no package request for backend repos, `packages.md`), and mention them in the PR.
 
 ## What goes where
 

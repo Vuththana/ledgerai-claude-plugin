@@ -13,7 +13,7 @@ description: Build an approved LedgerVision feature in a Spring Boot service ste
 - Its flow is ✅ approved, or the parts you build are settled (`feature-flows.md`).
 - It's the one feature being worked on (`workflow.md`), on its own branch.
 - **This service owns it** (`docs/TRD.md` §1a). If the plan writes another service's tables, stop: that's an API call or an event instead.
-- Every dependency the plan needs is already in `build.gradle`. If one is missing, stop: it needs a package request (`packages.md`).
+- Every dependency the plan needs is in `build.gradle`, or listed in the plan. Add a missing one in the step that first needs it (`packages.md`): no package request for backend repos.
 
 ## 1. Schema
 

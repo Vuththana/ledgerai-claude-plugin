@@ -28,7 +28,7 @@ Read changed files in full where the context matters.
 | No applied migration edited | `git diff --name-status main...HEAD -- src/main/resources/db/migration/`: anything but `A` (added) is a blocker |
 | Only this service's tables | Every table in new migrations and entities is this service's in `docs/TRD.md` §1a, in its schema |
 | Scope in every query | Repository methods on scoped tables filter by `business_id` (and `branch_id` for managers). No scope read from the request |
-| No unapproved dependencies | Any diff to `build.gradle`, `settings.gradle` or `gradle/` → ask for the approved package request |
+| Dependencies | Any diff to `build.gradle`, `settings.gradle` or `gradle/` is listed in the PR description, needed by this feature, and doesn't change the Spring Boot, Java or Gradle version (`packages.md`) |
 | No secrets | No real secrets in `application*.yml`, tests or compose files. `.env` isn't committed. No password/token/OTP in log statements (`grep -nE 'log\.(info\|debug\|warn\|error).*(password\|token\|otp\|secret)'`) |
 | Response envelope | Every endpoint returns `ApiResponse` (`success`, `code`, `message`, `data`, `timestamp`). New failures use `ApiException` with their own `code` + `messages.properties`. No `ex.getMessage()` in responses |
 | Configuration | New settings are in the right Consul file (`infra/consul/` shared, `consul/<service>*.yml` own), secrets only as `${ENV_VAR}`, no `ddl-auto` other than `validate` |

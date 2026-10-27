@@ -73,7 +73,7 @@ Entities, security, error handling, ModelMapper, events and jobs are **not skill
 |---|---|---|---|
 | `review-pull-request` | website-dev | `/website-dev:review-pull-request [PR \| branch]` | Checks the diff against `TEAM-RULES.md` §9 and the matching `.claude/rules/`, plus mechanical checks (dictionary, `lib/mock` imports, dependencies, `docs/`, lint, build) |
 | `review-pull-request` | springboot-dev | `/springboot-dev:review-pull-request [PR \| branch]` | The same review for a service: dictionary, edited migrations, table ownership, scope in queries, dependencies, secrets, error format, `docs/`, tests, build |
-| `manage-dependencies` | ledgerai | Auto | Checks whether a package is needed, evaluates it, and fills in the `TEAM-RULES.md` §7 request template for you. Never installs before approval |
+| `manage-dependencies` | ledgerai | Auto | Checks whether a package is needed and evaluates it. In web-ui it fills in the `TEAM-RULES.md` §7 request template and never installs before approval; backend repos need no request |
 | `sync-project-specs` | ledgerai | `/ledgerai:sync-project-specs` | Reports whether `docs/` is behind, what changed (MAJOR/MINOR/PATCH) and what it affects, and updates on request |
 
 Use the built-in `/simplify` for refactoring and `/code-review` for a general bug hunt.
@@ -238,6 +238,8 @@ The icon and license warnings only matter for the public plugin directory, so ig
 
 | Plugin | Version | Change |
 |---|---|---|
+| `ledgerai` | 0.6.0 | Package requests are for web-ui only (docs v3.1.0): `manage-dependencies` and `document-feature` stop asking backend repos for one |
+| `springboot-dev` | 0.4.0 | The same for the backend: `packages.md` and `workflow.md` templates, `setup-service`, `implement-feature`, `write-tests`, `review-pull-request` |
 | `ledgerai` | 0.5.0 | `dictionary-checker` checks JSONB content against `docs/data-dictionary/jsonb-shapes.md` (docs v4.1.0): mismatches for ✅ shapes, notes for 📝 proposed ones. `analyze-requirements` reads the shapes too |
 | `springboot-dev` | 0.3.0 | The `data-dictionary.md` rule template points to `jsonb-shapes.md` for the keys inside `jsonb` columns |
 | `springboot-dev` | 0.2.0 | Follows `docs/TRD.md` v3.0.0: `ApiResponse` envelope with `code`, one schema per service, OpenFeign + Resilience4j, Consul KV config, S3/RustFS, Zipkin, springdoc. `setup-service` checks for them, and `debug-backend` covers Consul, Feign and schemas |
