@@ -13,6 +13,7 @@ The `docs/` submodule (`ledgerai-project-docs`) is the source of truth for what 
 | `docs/flow/<feature>.md` | Behaviour, screens, states, messages, roles, decisions, open questions |
 | `docs/data-dictionary/` (`README.md` maps tables to files) | Every table and field |
 | `docs/data-dictionary/jsonb-shapes.md` | The keys inside every `jsonb` column, each ✅ settled or 📝 proposed |
+| `docs/api/<service>.md` (`README.md` lists the services) | The endpoints that exist or are planned: method, path, body, response, error codes |
 | `docs/TRD.md` | Technical requirements: stack, API, security, data, jobs, non-functional. Only ✅ items are settled |
 | `docs/TEAM-RULES.md` | The rules every repo follows |
 | `docs/VERSION.md` | What changed recently |

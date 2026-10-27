@@ -29,4 +29,5 @@ When Claude is asked to build a feature, it writes the plan first and waits for 
 ## Before opening a pull request
 
 - `./gradlew build` passes (all unit and integration tests).
+- Every endpoint added or changed is listed in `docs/api/<service>.md`, through a docs pull request (`docs/TEAM-RULES.md` §3).
 - The checklist in `docs/TEAM-RULES.md` §9 is met.

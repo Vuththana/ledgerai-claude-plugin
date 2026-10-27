@@ -50,6 +50,15 @@ Follow the `write-tests` skill for this endpoint. It needs at least:
 - each error `code` in the contract
 - each role: owner, manager of the same branch, manager of another branch (`404` or `403`), deactivated user (`401`)
 
-## 6. Check
+## 6. List it in the API reference
 
-`./gradlew build` passes. Give a `curl` example for the endpoint in the summary.
+The web UI builds against `docs/api/<service>.md` (`docs/TEAM-RULES.md` §3), so a new or changed endpoint goes there in the same change:
+
+- Edit a separate clone of `ledgerai-project-docs`, never the `docs/` submodule (`docs/GUIDE.md` §7).
+- Follow `docs/api/README.md`: method, path, who may call it, request fields, response `data`, every error `code` with its status, the flow section, and the status mark (🚧 while the PR is open, ✅ once merged). Leave out the shared errors the README already lists.
+- A changed contract goes under **Impact** for `web-ui` in `VERSION.md`.
+- Pushing the docs repo is a team-visible change: ask before pushing.
+
+## 7. Check
+
+`./gradlew build` passes, and the endpoint's entry in `docs/api/<service>.md` matches the code. Give a `curl` example for the endpoint in the summary.

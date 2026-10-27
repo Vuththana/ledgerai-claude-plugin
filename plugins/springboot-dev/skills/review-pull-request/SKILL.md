@@ -34,6 +34,7 @@ Read changed files in full where the context matters.
 | Configuration | New settings are in the right Consul file (`infra/consul/` shared, `consul/<service>*.yml` own), secrets only as `${ENV_VAR}`, no `ddl-auto` other than `validate` |
 | Other services | Calls go through Feign clients with a circuit breaker, never hard-coded URLs |
 | `docs/` untouched | Any change under `docs/` (other than a deliberate submodule bump) is a blocker |
+| Endpoints in the API reference | Every new or changed `@*Mapping` is in `docs/api/<service>.md` (or the docs PR that adds it), with the same method, path, fields and error codes |
 | Tests | New endpoints have integration tests for each error code and each role (`write-tests`) |
 | Builds | `./gradlew build` |
 
@@ -42,7 +43,7 @@ Read changed files in full where the context matters.
 Each finding with `path:line`, the rule it breaks (file and section), and the fix:
 
 - **Blocking:** scope or role leaks, dictionary mismatches, edited migrations, other services' tables, secrets, `docs/` edits, unapproved dependencies, failing build
-- **Should fix:** missing tests or states, rule breaks
+- **Should fix:** missing tests or states, rule breaks, endpoints missing from `docs/api/`
 - **Nits**
 
 End with a verdict: **Ready to merge**, **Merge after fixes**, or **Needs another review**.
