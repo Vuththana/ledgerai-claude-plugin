@@ -38,6 +38,7 @@ Plugins can't ship `CLAUDE.md` or rules files: Claude Code only loads skills, ag
 | Skill | Plugin | How | What it does |
 |---|---|---|---|
 | `implement-feature` | website-dev | Auto | The build order, from the approved plan to the checks. Each step names the rule that applies |
+| `figma-design` | website-dev | Auto | Finds a screen in the Figma design (section → node index, Owner and Branch Manager rows), reads it with the Figma plugin, adapts it to our components and tokens, and checks it against the flow and dictionary |
 
 Components, forms, data tables, dashboards, API integration, authentication, roles, responsive and accessibility are **not skills**. They are web-ui rules (`ui-components.md`, `forms.md`, `data-tables.md`, `drag-and-drop.md`, `data-layer.md`, `nextjs.md`) plus the feature's flow doc.
 
@@ -66,6 +67,8 @@ Entities, security, error handling, ModelMapper, events and jobs are **not skill
 | `debug-frontend` | website-dev | Auto | How to debug, plus a symptom → cause → rule table for this stack |
 | `write-tests` | springboot-dev | Auto | JUnit 5 + Mockito unit tests and Testcontainers integration tests, with every error code and every role covered |
 | `debug-backend` | springboot-dev | Auto | How to debug, plus a symptom → cause → rule table for Spring Boot, Flyway, Keycloak, Consul and RabbitMQ |
+| `qa` | ledgerai | `/ledgerai:qa <feature> [base-url]` | Black-box QA of a built feature against its ✅ flow, in three kinds (correctness, validation, misuse). Picks the tester for the repo: `qa-web` in web-ui, `qa-api` in a service. Writes `qa-reports/<date>-<feature>.md` and replies with the counts and failures |
+| `qa-method` | ledgerai | Preloaded by the QA agents | The shared method: find the spec, write every scenario first, run rules, report format. Not run directly |
 
 ### 06. Maintenance & Collaboration
 
@@ -83,6 +86,8 @@ Use the built-in `/simplify` for refactoring and `/code-review` for a general bu
 | | Plugin | What it does |
 |---|---|---|
 | `dictionary-checker` agent | ledgerai | Compares types, forms, validation, mock data, JPA entities, DTOs and Flyway migrations with `docs/data-dictionary/`, and reports mismatches. Never edits the dictionary |
+| `qa-web` agent | website-dev | The web tester behind `/ledgerai:qa`: the running app in the browser (Playwright MCP), on the mock API, codes from the dev log, seeded accounts changed last. Never edits code |
+| `qa-api` agent | springboot-dev | The service tester behind `/ledgerai:qa`: IDE diagnostics (`/ide`) and the feature's Gradle tests first, then every endpoint through Swagger UI (Playwright MCP), codes from Mailpit, database and Redis checked read-only. May start the local stack; never edits code |
 | ESLint hook | website-dev | After Claude edits a `.ts/.tsx/.js/.jsx/.mjs/.cjs` file, runs `node_modules/.bin/eslint --fix` on it. Does nothing without ESLint. Needs `jq` |
 | Compile-check hook | springboot-dev | After Claude edits a `.java` file, runs `./gradlew compileJava` (or `compileTestJava`) and hands any compiler errors back to Claude. Does nothing without a Gradle wrapper. Needs `jq` |
 
@@ -93,6 +98,7 @@ Use the built-in `/simplify` for refactoring and `/code-review` for a general bu
 /ledgerai:document-feature <feature>  plan → team approves
   build: implement-feature (rules load as files are touched)
 /ledgerai:review-feature <feature>    matches the flow?
+/ledgerai:qa <feature>                works in the browser / through Swagger UI?
 /website-dev:review-pull-request      follows the rules?     (web-ui)
 /springboot-dev:review-pull-request   follows the rules?     (Spring services)
 ```
@@ -189,9 +195,9 @@ A skill that only lists facts or conventions is really a rule or a doc. Move it.
 
 ```
 .claude-plugin/marketplace.json
-plugins/ledgerai/        .claude-plugin/plugin.json · agents/ · skills/<name>/SKILL.md   (6 skills)
-plugins/website-dev/     .claude-plugin/plugin.json · hooks/ · skills/<name>/SKILL.md    (6 skills)
-plugins/springboot-dev/  .claude-plugin/plugin.json · hooks/ · skills/<name>/SKILL.md    (7 skills)
+plugins/ledgerai/        .claude-plugin/plugin.json · agents/ · skills/<name>/SKILL.md            (8 skills)
+plugins/website-dev/     .claude-plugin/plugin.json · agents/ · hooks/ · skills/<name>/SKILL.md  (7 skills)
+plugins/springboot-dev/  .claude-plugin/plugin.json · agents/ · hooks/ · skills/<name>/SKILL.md  (7 skills)
                          skills/setup-service/template/   settings.json · CLAUDE.md · rules/ for a service repo
 templates/               project-settings.json · web-project-settings.json
 ```
@@ -238,9 +244,13 @@ The icon and license warnings only matter for the public plugin directory, so ig
 
 | Plugin | Version | Change |
 |---|---|---|
+| `ledgerai` | 0.8.0 | New `/ledgerai:qa <feature>` skill and the shared `qa-method` skill: one QA method for every repo (three kinds, scenarios first, report in `qa-reports/`), which picks the repo's tester |
+| `website-dev` | 0.4.0 | New `qa-web` agent: web-ui's QA tester, moved here from web-ui's `.claude/` and built on `qa-method` |
+| `springboot-dev` | 0.8.0 | New `qa-api` agent: QA for a service through Swagger UI (Playwright MCP), after IDE diagnostics and the feature's Gradle tests; Mailpit codes; read-only database and Redis checks |
 | `springboot-dev` | 0.7.0 | One shared infrastructure (docs v4.6.0): new `infrastructure.md` rule in the service template (identity-service owns `infra/`; other services never copy it, they hold only their service, Consul config and compose on `ledgervision-net`); `setup-service` checks the compose file, port and Consul name against `docs/TRD.md` §1b |
 | `springboot-dev` | 0.6.0 | Endpoints go in the API reference (docs v4.5.0): `add-endpoint` step 6 lists each new or changed endpoint in `docs/api/<service>.md`; `implement-feature`, `review-pull-request` and the `workflow.md` template check it |
 | `ledgerai` | 0.7.0 | `analyze-requirements` reads `docs/api/<service>.md` for the endpoints that exist |
+| `website-dev` | 0.3.0 | New `figma-design` skill: the team's Figma file (Copy of FinSight), a section → node index, and how to read and adapt a screen. `implement-feature` step 3 points to it |
 | `springboot-dev` | 0.5.0 | `spring.md` template follows docs v4.3.0: success `code` is the HTTP status name (`ApiResponse.ok` / `created`), no `204` without a body |
 | `ledgerai` | 0.6.0 | Package requests are for web-ui only (docs v3.1.0): `manage-dependencies` and `document-feature` stop asking backend repos for one |
 | `springboot-dev` | 0.4.0 | The same for the backend: `packages.md` and `workflow.md` templates, `setup-service`, `implement-feature`, `write-tests`, `review-pull-request` |
