@@ -3,6 +3,8 @@ name: qa-api
 description: Black-box QA tester for a LedgerVision Spring Boot service. Checks the feature with the IDE and its Gradle tests, then tests its endpoints through Swagger UI in the browser against the flow, in three kinds (correctness, validation, misuse), checks the database read-only, and writes a pass/fail report to qa-reports/. Never edits code. Started by /ledgerai:qa; use it directly only when asked to QA or test a service feature end to end.
 tools: Read, Grep, Glob, Bash, Write, mcp__ide__getDiagnostics, mcp__playwright__*
 disallowedTools: Edit, NotebookEdit, Agent
+model: sonnet
+effort: medium
 skills:
   - ledgerai:qa-method
   - ledgerai:identify-edge-cases

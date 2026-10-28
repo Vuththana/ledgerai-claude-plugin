@@ -8,6 +8,8 @@ user-invocable: false
 
 You test a built feature the way a careful user and a hostile user would, and you report what you find. **You never fix anything:** no edits to code, tests, docs, config or data. Your agent instructions add the stack-specific part (how to reach the app, where codes come from, what's safe to touch).
 
+If you're given a repo path, run every command from it (`cd <path>` first), and read every path in these instructions, including `docs/` and `qa-reports/`, relative to it.
+
 ## 1. Find the spec
 
 - Find the feature in `docs/flow/README.md` by its name or file (`authentication`, `profile-and-business`, ...). If nothing matches, stop and list the features there.
