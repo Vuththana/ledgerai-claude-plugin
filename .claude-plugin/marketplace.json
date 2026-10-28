@@ -13,7 +13,7 @@
     },
     {
       "name": "website-dev",
-      "description": "LedgerVision web front-end workflow skills: implementing a feature, debugging, PR review and test placeholders, plus an ESLint --fix hook",
+      "description": "LedgerVision web front-end workflow skills: implementing a feature, reading the Figma design, debugging, PR review and test placeholders, plus an ESLint --fix hook",
       "source": "./plugins/website-dev"
     },
     {

@@ -25,6 +25,7 @@ Read changed files in full where the context matters.
 | Check | How |
 |---|---|
 | Data matches the dictionary | Run the `dictionary-checker` agent on changed types, forms, mock data and API files |
+| `src/lib/api` matches the API reference | Each changed `src/lib/api` function and its mock use the method, path, fields and error codes of its endpoint in `docs/api/<service>.md`. An endpoint not listed there must be in the approved plan |
 | Only `src/lib/api` imports `src/lib/mock` | `git diff main...HEAD --name-only \| xargs grep -ln "lib/mock"` |
 | No dependency changes without an approved request | Any diff to `package.json` or `pnpm-lock.yaml` → ask for the request |
 | `docs/` untouched | Any change under `docs/` (other than a deliberate submodule bump) is a blocker |

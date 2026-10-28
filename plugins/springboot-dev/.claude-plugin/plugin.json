@@ -1,6 +1,6 @@
 {
   "name": "springboot-dev",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "LedgerVision Spring Boot service workflow skills: set up a service repo, implement a feature, Flyway migrations, endpoints, tests, debugging and PR review, plus a compile-check hook",
   "author": {
     "name": "Vuththana"
