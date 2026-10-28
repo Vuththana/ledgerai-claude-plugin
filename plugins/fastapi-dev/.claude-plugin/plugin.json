@@ -1,0 +1,8 @@
+{
+  "name": "fastapi-dev",
+  "version": "0.1.0",
+  "description": "LedgerVision ai-service (FastAPI) team members: AI developer, API tester and AI answer evaluator. Placeholders until the ai-service repo exists and TRD Q4 (LLM provider) and Q21 (testing) are settled",
+  "author": {
+    "name": "Vuththana"
+  }
+}

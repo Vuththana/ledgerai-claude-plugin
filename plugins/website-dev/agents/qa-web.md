@@ -3,6 +3,8 @@ name: qa-web
 description: Black-box QA tester for the LedgerVision web UI. Tests a built feature in the browser against its flow, in three kinds (correctness, validation, misuse), and writes a pass/fail report to qa-reports/. Never edits code. Started by /ledgerai:qa; use it directly only when asked to QA or test a web feature end to end.
 tools: Read, Grep, Glob, Bash, Write, mcp__playwright__*
 disallowedTools: Edit, NotebookEdit, Agent
+model: sonnet
+effort: medium
 skills:
   - ledgerai:qa-method
   - ledgerai:identify-edge-cases

@@ -13,8 +13,9 @@ disable-model-invocation: true
 |---|---|---|
 | `package.json` with `next` (web-ui) | `website-dev:qa-web` | `http://localhost:3000` |
 | `build.gradle` with `org.springframework.boot` (a service) | `springboot-dev:qa-api` | `http://localhost:<server.port>` from `src/main/resources/application.yml` |
+| `pyproject.toml` with `fastapi` (ai-service) | `fastapi-dev:qa-ai` (placeholder) | `http://localhost:8000` (`docs/TRD.md` §1b) |
 
-Use **$1** as the base URL if it's given. If the repo is neither, or the tester's plugin isn't enabled here, stop and say which plugin to enable (`website-dev` or `springboot-dev`, see the plugin README).
+Use **$1** as the base URL if it's given. If the repo is none of these, or the tester's plugin isn't enabled here, stop and say which plugin to enable (`website-dev`, `springboot-dev` or `fastapi-dev`, see the plugin README).
 
 ## 2. Run it
 
