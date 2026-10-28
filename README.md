@@ -59,6 +59,7 @@ Entities, security, error handling, ModelMapper, events and jobs are **not skill
 |---|---|---|---|
 | `review-feature` | ledgerai | `/ledgerai:review-feature <feature>` | Checks the implementation requirement by requirement against the flow, plus the dictionary and role checks |
 | `check-hardcoded-values` | website-dev | Auto, before every `git push` | Scans the commits about to be pushed for hardcoded URLs, hosts, client IDs and secrets, and secrets in `NEXT_PUBLIC_` variables. Stops the push and lists what must go in the `.env` (and `.env.example`) |
+| `check-hardcoded-values` | springboot-dev | Auto, before every `git push` | The same for a service repo: hardcoded secrets (and secrets with a fallback), URLs, hosts and ports in Java, Consul config and compose files. Stops the push and lists what must become `${VAR}` and go in the `.env` (and `.env.example`) |
 
 ### 05. Testing
 
@@ -198,7 +199,7 @@ A skill that only lists facts or conventions is really a rule or a doc. Move it.
 .claude-plugin/marketplace.json
 plugins/ledgerai/        .claude-plugin/plugin.json · agents/ · skills/<name>/SKILL.md            (8 skills)
 plugins/website-dev/     .claude-plugin/plugin.json · agents/ · hooks/ · skills/<name>/SKILL.md  (8 skills)
-plugins/springboot-dev/  .claude-plugin/plugin.json · agents/ · hooks/ · skills/<name>/SKILL.md  (7 skills)
+plugins/springboot-dev/  .claude-plugin/plugin.json · agents/ · hooks/ · skills/<name>/SKILL.md  (8 skills)
                          skills/setup-service/template/   settings.json · CLAUDE.md · rules/ for a service repo
 templates/               project-settings.json · web-project-settings.json
 ```
@@ -245,6 +246,7 @@ The icon and license warnings only matter for the public plugin directory, so ig
 
 | Plugin | Version | Change |
 |---|---|---|
+| `springboot-dev` | 0.9.0 | New `check-hardcoded-values` skill: before every push, finds hardcoded secrets, secrets with a fallback, URLs, hosts and ports in Java, Consul config and compose files, and tells the user they must go in the `.env` as `${VAR}` |
 | `website-dev` | 0.5.0 | New `check-hardcoded-values` skill: before every push, finds hardcoded URLs, hosts, client IDs and secrets (and secrets in `NEXT_PUBLIC_` variables) in the commits to push, and tells the user they must go in the `.env` |
 | `ledgerai` | 0.8.0 | New `/ledgerai:qa <feature>` skill and the shared `qa-method` skill: one QA method for every repo (three kinds, scenarios first, report in `qa-reports/`), which picks the repo's tester. Each ❌ gets a severity (Blocker / Major / Minor) |
 | `website-dev` | 0.4.0 | New `qa-web` agent: web-ui's QA tester, moved here from web-ui's `.claude/` and built on `qa-method`, with the browser misuse cases (URLs past the gate, back after sign-out, refresh mid-flow, tampered query strings). `implement-feature` and `review-pull-request` check each `src/lib/api` function and its mock against its endpoint in `docs/api/<service>.md` |
