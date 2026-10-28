@@ -246,6 +246,7 @@ The icon and license warnings only matter for the public plugin directory, so ig
 
 | Plugin | Version | Change |
 |---|---|---|
+| `springboot-dev` | 0.10.0 | `add-endpoint` step 6 says when: an endpoint's entry in `docs/api/<service>.md` is written as soon as the user confirms its code, without being asked, and every summary says whether it's written or pending; `implement-feature` compares the controllers with the API reference before review |
 | `springboot-dev` | 0.9.0 | New `check-hardcoded-values` skill: before every push, finds hardcoded secrets, secrets with a fallback, URLs, hosts and ports in Java, Consul config and compose files, and tells the user they must go in the `.env` as `${VAR}` |
 | `website-dev` | 0.5.0 | New `check-hardcoded-values` skill: before every push, finds hardcoded URLs, hosts, client IDs and secrets (and secrets in `NEXT_PUBLIC_` variables) in the commits to push, and tells the user they must go in the `.env` |
 | `ledgerai` | 0.8.0 | New `/ledgerai:qa <feature>` skill and the shared `qa-method` skill: one QA method for every repo (three kinds, scenarios first, report in `qa-reports/`), which picks the repo's tester. Each ❌ gets a severity (Blocker / Major / Minor) |

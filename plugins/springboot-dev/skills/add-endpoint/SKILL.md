@@ -52,7 +52,9 @@ Follow the `write-tests` skill for this endpoint. It needs at least:
 
 ## 6. List it in the API reference
 
-The web UI builds against `docs/api/<service>.md` (`docs/TEAM-RULES.md` §3), so a new or changed endpoint goes there in the same change:
+The web UI builds against `docs/api/<service>.md` (`docs/TEAM-RULES.md` §3), so a new or changed endpoint goes there in the same change.
+
+**When:** as soon as the user confirms the endpoint's code, write its entry. Don't wait to be asked, and don't move on to the next endpoint or feature without it. Until the user confirms, the entry is pending: say so in every summary.
 
 - Edit a separate clone of `ledgerai-project-docs`, never the `docs/` submodule (`docs/GUIDE.md` §7).
 - Follow `docs/api/README.md`: method, path, who may call it, request fields, response `data`, every error `code` with its status, the flow section, and the status mark (🚧 while the PR is open, ✅ once merged). Leave out the shared errors the README already lists.
@@ -61,4 +63,4 @@ The web UI builds against `docs/api/<service>.md` (`docs/TEAM-RULES.md` §3), so
 
 ## 7. Check
 
-`./gradlew build` passes, and the endpoint's entry in `docs/api/<service>.md` matches the code. Give a `curl` example for the endpoint in the summary.
+`./gradlew build` passes, and the endpoint's entry in `docs/api/<service>.md` matches the code. Give a `curl` example for the endpoint in the summary, and say whether its API reference entry is written (with the docs branch) or pending the user's confirmation.

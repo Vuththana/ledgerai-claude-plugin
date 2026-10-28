@@ -27,7 +27,7 @@ Follow the `add-migration` skill for the plan's tables. Then run the `dictionary
 
 ## 3. Endpoints
 
-Follow the `add-endpoint` skill for each endpoint in the plan: DTOs and validation, service method (rules, role, scope, transaction), controller, error codes and messages, and its entry in `docs/api/<service>.md`.
+Follow the `add-endpoint` skill for each endpoint in the plan: DTOs and validation, service method (rules, role, scope, transaction), controller, error codes and messages, and its entry in `docs/api/<service>.md`, written as soon as the user confirms that endpoint's code (`add-endpoint` step 6).
 
 ## 4. Everything else the plan lists
 
@@ -64,7 +64,7 @@ Then run it for real:
 Then:
 
 - Run `/ledgerai:review-feature <feature>` against the flow.
-- Check that every endpoint of the feature is in `docs/api/<service>.md` (the docs PR from `add-endpoint` step 6).
+- Check that every endpoint of the feature is in `docs/api/<service>.md` (the docs PR from `add-endpoint` step 6). Compare the controllers' `@*Mapping`s with the file: any confirmed endpoint that's missing gets its entry now, before the review.
 - Run `/springboot-dev:review-pull-request` before opening the PR.
 
 ## When the docs don't answer something
