@@ -58,6 +58,7 @@ Entities, security, error handling, ModelMapper, events and jobs are **not skill
 | Skill | Plugin | How | What it does |
 |---|---|---|---|
 | `review-feature` | ledgerai | `/ledgerai:review-feature <feature>` | Checks the implementation requirement by requirement against the flow, plus the dictionary and role checks |
+| `check-hardcoded-values` | website-dev | Auto, before every `git push` | Scans the commits about to be pushed for hardcoded URLs, hosts, client IDs and secrets, and secrets in `NEXT_PUBLIC_` variables. Stops the push and lists what must go in the `.env` (and `.env.example`) |
 
 ### 05. Testing
 
@@ -196,7 +197,7 @@ A skill that only lists facts or conventions is really a rule or a doc. Move it.
 ```
 .claude-plugin/marketplace.json
 plugins/ledgerai/        .claude-plugin/plugin.json · agents/ · skills/<name>/SKILL.md            (8 skills)
-plugins/website-dev/     .claude-plugin/plugin.json · agents/ · hooks/ · skills/<name>/SKILL.md  (7 skills)
+plugins/website-dev/     .claude-plugin/plugin.json · agents/ · hooks/ · skills/<name>/SKILL.md  (8 skills)
 plugins/springboot-dev/  .claude-plugin/plugin.json · agents/ · hooks/ · skills/<name>/SKILL.md  (7 skills)
                          skills/setup-service/template/   settings.json · CLAUDE.md · rules/ for a service repo
 templates/               project-settings.json · web-project-settings.json
@@ -244,6 +245,7 @@ The icon and license warnings only matter for the public plugin directory, so ig
 
 | Plugin | Version | Change |
 |---|---|---|
+| `website-dev` | 0.5.0 | New `check-hardcoded-values` skill: before every push, finds hardcoded URLs, hosts, client IDs and secrets (and secrets in `NEXT_PUBLIC_` variables) in the commits to push, and tells the user they must go in the `.env` |
 | `ledgerai` | 0.8.0 | New `/ledgerai:qa <feature>` skill and the shared `qa-method` skill: one QA method for every repo (three kinds, scenarios first, report in `qa-reports/`), which picks the repo's tester. Each ❌ gets a severity (Blocker / Major / Minor) |
 | `website-dev` | 0.4.0 | New `qa-web` agent: web-ui's QA tester, moved here from web-ui's `.claude/` and built on `qa-method`, with the browser misuse cases (URLs past the gate, back after sign-out, refresh mid-flow, tampered query strings). `implement-feature` and `review-pull-request` check each `src/lib/api` function and its mock against its endpoint in `docs/api/<service>.md` |
 | `springboot-dev` | 0.8.0 | New `qa-api` agent: QA for a service through Swagger UI (Playwright MCP), after IDE diagnostics and the feature's Gradle tests; a checklist for each endpoint (every listed error code, required / length / enum / type, tokens, roles, other business's ids), owner + manager setup for role scenarios; Mailpit codes; read-only database and Redis checks. Merges identity-service's local `qa-tester` agent |
