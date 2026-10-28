@@ -244,9 +244,9 @@ The icon and license warnings only matter for the public plugin directory, so ig
 
 | Plugin | Version | Change |
 |---|---|---|
-| `ledgerai` | 0.8.0 | New `/ledgerai:qa <feature>` skill and the shared `qa-method` skill: one QA method for every repo (three kinds, scenarios first, report in `qa-reports/`), which picks the repo's tester |
-| `website-dev` | 0.4.0 | New `qa-web` agent: web-ui's QA tester, moved here from web-ui's `.claude/` and built on `qa-method` |
-| `springboot-dev` | 0.8.0 | New `qa-api` agent: QA for a service through Swagger UI (Playwright MCP), after IDE diagnostics and the feature's Gradle tests; Mailpit codes; read-only database and Redis checks |
+| `ledgerai` | 0.8.0 | New `/ledgerai:qa <feature>` skill and the shared `qa-method` skill: one QA method for every repo (three kinds, scenarios first, report in `qa-reports/`), which picks the repo's tester. Each ❌ gets a severity (Blocker / Major / Minor) |
+| `website-dev` | 0.4.0 | New `qa-web` agent: web-ui's QA tester, moved here from web-ui's `.claude/` and built on `qa-method`, with the browser misuse cases (URLs past the gate, back after sign-out, refresh mid-flow, tampered query strings). `implement-feature` and `review-pull-request` check each `src/lib/api` function and its mock against its endpoint in `docs/api/<service>.md` |
+| `springboot-dev` | 0.8.0 | New `qa-api` agent: QA for a service through Swagger UI (Playwright MCP), after IDE diagnostics and the feature's Gradle tests; a checklist for each endpoint (every listed error code, required / length / enum / type, tokens, roles, other business's ids), owner + manager setup for role scenarios; Mailpit codes; read-only database and Redis checks. Merges identity-service's local `qa-tester` agent |
 | `springboot-dev` | 0.7.0 | One shared infrastructure (docs v4.6.0): new `infrastructure.md` rule in the service template (identity-service owns `infra/`; other services never copy it, they hold only their service, Consul config and compose on `ledgervision-net`); `setup-service` checks the compose file, port and Consul name against `docs/TRD.md` §1b |
 | `springboot-dev` | 0.6.0 | Endpoints go in the API reference (docs v4.5.0): `add-endpoint` step 6 lists each new or changed endpoint in `docs/api/<service>.md`; `implement-feature`, `review-pull-request` and the `workflow.md` template check it |
 | `ledgerai` | 0.7.0 | `analyze-requirements` reads `docs/api/<service>.md` for the endpoints that exist |

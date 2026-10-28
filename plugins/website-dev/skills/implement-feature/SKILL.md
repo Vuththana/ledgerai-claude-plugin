@@ -17,13 +17,15 @@ description: Build an approved LedgerVision front-end feature step by step, from
 
 Types, mock fixtures and `src/lib/api` functions for the tables the plan lists (`data-layer.md`). Then run the `dictionary-checker` agent on them.
 
+Before writing or changing a `src/lib/api` function, find its endpoint in `docs/api/<service>.md` (`docs/api/README.md` lists the services). The function and its mock use exactly that method, path, request and response fields, and error `code`s, inside the response envelope. If the endpoint isn't listed yet, take it from the approved plan and say so in the PR, so the backend adds it. Don't invent an endpoint.
+
 ## 2. Routes
 
 Pages and layouts in the right route group. Add the role check for owner-only segments, and `<Suspense>` around dynamic parts (`nextjs.md`).
 
 ## 3. UI
 
-Components in `src/features/<feature>/`, reusing `src/components/ui` and `src/components/shared` (`ui-components.md`, plus `forms.md`, `data-tables.md` and `drag-and-drop.md` where they apply).
+Components in `src/features/<feature>/`, reusing `src/components/ui` and `src/components/shared` (`ui-components.md`, plus `forms.md`, `data-tables.md` and `drag-and-drop.md` where they apply). Take the look of each screen from the Figma design (`figma-design` skill).
 
 ## 4. Roles
 

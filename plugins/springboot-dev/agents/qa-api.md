@@ -14,9 +14,9 @@ The service's name, base package, schema and features are in `CLAUDE.md`, and it
 
 ## 1. Static check, before the browser
 
-1. Find the feature's files: `src/main/java/<base package>/<feature package>/**` and the matching tests.
-2. If `mcp__ide__getDiagnostics` is available (the IDE is connected with `/ide`), call it for each file URI. Report errors, and the warnings that matter. If it isn't available, say so and rely on Gradle.
-3. Run the feature's tests: `./gradlew test --tests '<base package>.<feature package>.*' --console=plain`. Integration tests need Docker. Report the counts and every failure with its assertion message.
+1. Find the feature's files: `src/main/java/<base package>/<feature package>/**` and the matching tests. A feature can span several packages (in identity-service, Authentication is `auth`, `invitation` and `common.security`): start from the controllers that serve its endpoints.
+2. If `mcp__ide__getDiagnostics` is available (the IDE is connected with `/ide`), call it for each file URI (`file:///…/X.java`). Report errors, and the warnings that matter (unused results, nullability, deprecated API). If it isn't available or times out, say so and rely on Gradle.
+3. Run the feature's tests: `./gradlew test --tests '<base package>.<feature package>.*' --console=plain`, once per package. Integration tests need Docker. Report the counts and every failure with its assertion message.
 
 A compile error stops the run: report it and don't open the browser.
 
@@ -32,9 +32,26 @@ Everything runs on this machine. **Never point a request at anything other than 
    4. If the service still won't start, report the log lines that show why and stop.
 3. Mailpit must answer for flows that send email: `curl -s localhost:8025/api/v1/info`.
 
-Starting local containers and the service is the only change you may make to the machine. Never stop or remove containers, volumes or data.
+Starting local containers and the service is the only change you may make to the machine. Never stop or remove containers, volumes or data. In your reply, say what you started and what's still running.
 
-## 3. Running scenarios in Swagger UI
+## 3. Scenarios for each endpoint
+
+Test only the endpoints `docs/api/<service>.md` lists for the feature (🚧 or ✅). An endpoint the flow needs that isn't there is ⏭️ "not built yet". On top of the `qa-method` scenarios, cover for every endpoint:
+
+- **Correctness:** the success status and `code`, the envelope, every `data` field the API doc lists, and the rows, emails and audit entries the flow promises (§5).
+- **Validation:**
+  - every error code the API doc lists for it, each with a request built to trigger it
+  - each required field missing, each max length + 1 (from the dictionary), a bad enum value, a wrong JSON type
+  - expect `400 VALIDATION_FAILED` with the field errors in `data`, keyed by the snake_case field name
+- **Misuse:**
+  - no token, a garbage token, an expired token → `401`; a signed-out or revoked token → `401 SESSION_REVOKED` where the flow says so
+  - the other role → `403 FORBIDDEN_ROLE` where the flow restricts it
+  - another business's or branch's ids → `404`, never their data
+  - a reused code or link, and a double submit
+
+**Role pairs.** For role scenarios you need an owner and a manager in the same business, plus an owner of a second business. Create them through identity-service the way the flows say: sign up and verify an owner, `POST /businesses`, then invite a manager if that endpoint exists. If it doesn't, the manager scenarios are ⏭️ with that reason.
+
+## 4. Running scenarios in Swagger UI
 
 1. **Open Swagger UI:** `<base-url>/swagger-ui/index.html` (some services also redirect `/` to it). Read the page with `browser_snapshot`, and prefer snapshots over screenshots.
 2. **Call an operation:**
@@ -58,15 +75,10 @@ Starting local containers and the service is the only change you may make to the
    - The status and `code` (on success it's the HTTP status name, `OK` / `CREATED`).
    - The envelope.
    - The `data` field names, exactly as in the API doc, in snake_case.
-   - Validation errors in `data`, keyed by field name.
-   - Messages in English, and never a stack trace, SQL or exception text.
-7. **Misuse cases for an API:**
-   - No token, a garbage token, an expired token, a token after sign-out.
-   - The other role's endpoints (`403 FORBIDDEN_ROLE`).
-   - Another business's or branch's ids (`404`, never their data).
-   - A reused code or link, and a double submit.
+   - Validation errors in `data`, keyed by the snake_case field name.
+   - Messages in English (from `messages.properties`), and never a stack trace, SQL or exception text.
 
-## 4. Side effects (read-only)
+## 5. Side effects (read-only)
 
 Where the flow promises a change, check it with **SELECT only**, in this service's schema:
 

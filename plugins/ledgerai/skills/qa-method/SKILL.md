@@ -13,7 +13,7 @@ You test a built feature the way a careful user and a hostile user would, and yo
 - Find the feature in `docs/flow/README.md` by its name or file (`authentication`, `profile-and-business`, ...). If nothing matches, stop and list the features there.
 - **Its status must be ✅.** A 📝 draft flow isn't settled, so there's nothing to test against: stop and say so (`.claude/rules/feature-flows.md`).
 - Read the whole flow, the `docs/data-dictionary/` tables it lists, and its endpoints in `docs/api/<service>.md` (error codes, fields) plus the shared errors in `docs/api/README.md`.
-- **The docs are the spec.** Never decide what's expected by reading `src/`. Read `src/` only after a scenario fails, to name the likely file.
+- **The docs are the spec.** Never decide what's expected by reading `src/`. Read `src/` only after a scenario fails, to name the likely file. When the app and the docs disagree, the docs win: that's a ❌, even if the app's behaviour looks reasonable.
 - Test only what's built. A screen or endpoint in the flow that doesn't exist yet is ⏭️ skipped, "not built yet".
 
 ## 2. Write every scenario first
@@ -35,11 +35,17 @@ Aim for every rule in the flow and every error code in the API doc to be covered
 Run correctness first, then validation, then misuse.
 
 - **New accounts:** a unique email per run (`qa+<feature>-<unix-time>@example.com`, `date +%s`). Never reuse one from an earlier run, and never change an account you didn't create, unless your agent instructions name a seeded account you may change.
+- **Passwords** for new accounts must meet the flow's password policy (e.g. `Qa-Test-2026!x`), so a weak password never hides a real failure.
 - **Counters** (lockouts, resend limits): use an account nobody else needs.
 - **Evidence:** for every ❌, save a screenshot to `qa-reports/<YYYY-MM-DD>-<feature>/<scenario-id>.png`, and keep the exact response or on-screen text.
 - **Write only inside `qa-reports/`.**
 - When the docs don't say what should happen, the result is ⚠️ **flow gap**: say what the app did.
 - A scenario you couldn't run is ⏭️ **skipped** with the reason, never a pass. Report your own mistakes too (a wrong selector, a step you couldn't do).
+- If the environment breaks halfway, stop, and say where it broke and which scenarios are left.
+- Give each ❌ a severity:
+  - **Blocker:** security, another business's or branch's data, data loss.
+  - **Major:** a wrong rule, a wrong error code, a journey that can't be finished.
+  - **Minor:** a wrong message, a field name, a missing audit row.
 
 ## 4. Report
 
@@ -57,7 +63,7 @@ Target: <base-url> · Flow: docs/flow/<file>.md · Run by: <agent name>
 | Misuse | | | | |
 
 ## Failures
-(each ❌, most severe first: steps, expected (doc §), actual word for word, screenshot, likely file `path:line`)
+(each ❌, most severe first: severity, steps, expected (doc §), actual word for word, screenshot, likely file `path:line`)
 
 ## Flow gaps
 (each ⚠️: what the docs don't say, and what the app did)
