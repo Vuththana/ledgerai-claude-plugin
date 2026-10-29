@@ -9,8 +9,8 @@
     }
   },
   "enabledPlugins": {
-    "ledgerai@ledgerai": true,
-    "website-dev@ledgerai": true
+    "sdd@ledgerai": true,
+    "sdd-web@ledgerai": true
   },
   "permissions": {
     "allow": [

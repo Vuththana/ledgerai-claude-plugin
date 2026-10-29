@@ -8,7 +8,7 @@ import tempfile
 import unittest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-HOOK = os.path.join(HERE, "..", "plugins", "website-dev", "hooks", "package-gate.py")
+HOOK = os.path.join(HERE, "..", "plugins", "sdd-web", "hooks", "package-gate.py")
 
 SHEET = """\
 Next.js Project – Package Installation Request Form,,,,,,,,,,,,
@@ -16,9 +16,9 @@ How to use,,,,,,,,,,,,
 "REQUEST — filled by team member",,,,,,,,,,APPROVAL,,
 No.,Date Requested,Requested By,1. Package Name,2. Package Resource Link,3. Package Registry Link,4. Purpose,5. Reason for Adding,6. Usage Location,7. Proposed Version,Status,Decision Date,Approver Comments
 Auto-numbered,dd/mm/yyyy,Choose your name,Exact name,Docs,npm page,What,Why,Where,Version,Approver only,Approver only,Approver only
-3,26/10/2026,Keo Vuththana,dndkit,https://dndkit.com/,pnpm add @dnd-kit/react,Drag and drop,Dashboard,Dashboard,0.5.1,Approved,,
-4,29/10/2026,Keo Vuththana,recharts,https://recharts.org,https://www.npmjs.com/package/recharts,Charts,Dashboard,Dashboard,2.15.0,Pending,,
-5,29/10/2026,Try Limhai,zod,https://zod.dev,https://www.npmjs.com/package/zod,Validation,Forms,Forms,3.25.0,Approved,,
+3,26/10/2026,Test Member,dndkit,https://dndkit.com/,pnpm add @dnd-kit/react,Drag and drop,Dashboard,Dashboard,0.5.1,Approved,,
+4,29/10/2026,Test Member,recharts,https://recharts.org,https://www.npmjs.com/package/recharts,Charts,Dashboard,Dashboard,2.15.0,Pending,,
+5,29/10/2026,Other Member,zod,https://zod.dev,https://www.npmjs.com/package/zod,Validation,Forms,Forms,3.25.0,Approved,,
 ,,,,,,,,,,Approved,,
 """
 

@@ -1,30 +1,30 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "ledgerai",
-  "description": "Shared Claude Code plugins for the LedgerVision AI team",
+  "description": "LedgerVision AI team plugins (v2, Spec-Driven Development): specify, clarify, plan, tasks, build, verify, QA, trace and ship, with requirement IDs from spec to test",
   "owner": {
     "name": "Vuththana"
   },
   "plugins": [
     {
-      "name": "ledgerai",
-      "description": "Team-wide LedgerVision workflow skills for every repo: requirements, feature plans, edge cases, feature review, flow audits, package requests, spec sync and the /ledgerai:dev-team orchestrator, plus the analyst, planner, reviewer, flow auditor and data dictionary checker agents",
-      "source": "./plugins/ledgerai"
+      "name": "sdd",
+      "description": "The SDD lifecycle for every repo: /sdd:specify, clarify, amend, migrate, plan, tasks, build, verify, qa, trace, ship, run, status, review-pr, sync-docs; the spec-auditor, planner, spec-reviewer and dictionary-checker agents; sddtool.py for ID checks and the traceability matrix",
+      "source": "./plugins/sdd"
     },
     {
-      "name": "website-dev",
-      "description": "LedgerVision web front-end workflow skills: implementing a feature, reading the Figma design, debugging, PR review and test placeholders, plus the frontend-dev, pr-reviewer-web and qa-web agents and an ESLint --fix hook",
-      "source": "./plugins/website-dev"
+      "name": "sdd-web",
+      "description": "SDD for LedgerVision web-ui (Next.js): the web-dev, web-reviewer and web-qa agents, implement-feature, figma-design, debug and test skills, and an ESLint --fix hook",
+      "source": "./plugins/sdd-web"
     },
     {
-      "name": "springboot-dev",
-      "description": "LedgerVision Spring Boot service workflow skills: set up a service repo, implement a feature, Flyway migrations, endpoints, tests, debugging and PR review, plus the backend-dev, pr-reviewer-api and qa-api agents and a compile-check hook",
-      "source": "./plugins/springboot-dev"
+      "name": "sdd-spring",
+      "description": "SDD for LedgerVision Spring Boot services: the api-dev, api-reviewer and api-qa agents, setup-service, implement-feature, add-migration, add-endpoint, write-tests and debug skills, and a compile-check hook",
+      "source": "./plugins/sdd-spring"
     },
     {
-      "name": "fastapi-dev",
-      "description": "LedgerVision ai-service (FastAPI) team members: AI developer, API tester and AI answer evaluator. Placeholders until the ai-service repo exists and TRD Q4 (LLM provider) and Q21 (testing) are settled",
-      "source": "./plugins/fastapi-dev"
+      "name": "sdd-fastapi",
+      "description": "SDD for LedgerVision ai-service (FastAPI): placeholder ai-dev, qa-ai and ai-eval agents until the repo exists and TRD Q4 and Q21 are settled",
+      "source": "./plugins/sdd-fastapi"
     }
   ]
 }

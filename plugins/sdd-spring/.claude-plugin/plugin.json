@@ -1,0 +1,8 @@
+{
+  "name": "sdd-spring",
+  "version": "1.0.0",
+  "description": "SDD for LedgerVision Spring Boot services: the api-dev, api-reviewer and api-qa agents, setup-service (rules, CI workflow), implement-feature, add-migration, add-endpoint, write-tests and debug skills, and a compile-check hook",
+  "author": {
+    "name": "Vuththana"
+  }
+}

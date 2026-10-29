@@ -9,10 +9,10 @@
     }
   },
   "enabledPlugins": {
-    "ledgerai@ledgerai": true,
-    "website-dev@ledgerai": true,
-    "springboot-dev@ledgerai": true,
-    "fastapi-dev@ledgerai": true
+    "sdd@ledgerai": true,
+    "sdd-web@ledgerai": true,
+    "sdd-spring@ledgerai": true,
+    "sdd-fastapi@ledgerai": true
   },
   "permissions": {
     "allow": [
@@ -22,7 +22,8 @@
       "Bash(git -C * status)",
       "Bash(git -C * diff *)",
       "Bash(git -C * log *)",
-      "Bash(git -C * submodule status *)"
+      "Bash(git -C * submodule status *)",
+      "Bash(python3 -I *sddtool.py *)"
     ],
     "ask": [
       "Bash(git push *)",

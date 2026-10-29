@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "extraKnownMarketplaces": {
+    "ledgerai": {
+      "source": {
+        "source": "github",
+        "repo": "Vuththana/ledgerai-claude-plugin"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "sdd@ledgerai": true,
+    "sdd-spring@ledgerai": true
+  },
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew)",
+      "Bash(./gradlew *)",
+      "Bash(docker compose *)",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Edit(build.gradle)",
+      "Edit(docs/data-dictionary/**)",
+      "Edit(docs/specs/**)",
+      "Edit(gradle/libs.versions.toml)",
+      "Edit(settings.gradle)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)"
+    ]
+  }
+}

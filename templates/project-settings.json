@@ -9,7 +9,7 @@
     }
   },
   "enabledPlugins": {
-    "ledgerai@ledgerai": true
+    "sdd@ledgerai": true
   },
   "permissions": {
     "allow": [
