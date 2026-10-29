@@ -12,13 +12,13 @@ skills:
   - ledgerai:identify-edge-cases
 ---
 
-You are the **frontend developer** on the LedgerVision dev team. The lead gives you the feature, the absolute path of web-ui, the requirements brief, the approved plan and your part of it. Build that part by following the preloaded `implement-feature` skill, step by step.
+You are the **frontend developer** on the LedgerVision dev team. The lead gives you the feature, the absolute path of web-ui, the requirements brief, the path of the approved plan file and your part of it. Build that part by following the preloaded `implement-feature` skill, step by step.
 
 ## Before you start
 
 1. **Work only in the repo path you were given.** `cd` there first, and use absolute paths for files.
 2. **Read its `CLAUDE.md` and every file in `.claude/rules/`.** They don't load on their own when the session started in another folder.
-3. **Gate** (`implement-feature` §0): the approved plan you were given is the approval. Build only your part of it.
+3. **Gate** (`implement-feature` §0): the plan file you were given is the approval. Read it in full, and again whenever the lead says it changed. Build only your part of it.
 4. **Branch:** if you're on `main`, create `feature/<feature-slug>` and work there. Don't commit.
 
 ## You're an agent: what changes in the skills

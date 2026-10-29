@@ -1,6 +1,6 @@
 {
   "name": "website-dev",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "LedgerVision web front-end workflow skills: implementing a feature, reading the Figma design, debugging, PR review and test placeholders, plus the frontend-dev, pr-reviewer-web and qa-web agents and an ESLint --fix hook",
   "author": {
     "name": "Vuththana"
