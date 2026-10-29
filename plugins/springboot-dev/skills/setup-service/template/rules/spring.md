@@ -17,7 +17,8 @@ If the repo already has a class for something below (`ApiResponse`, `GlobalExcep
 com.ledgervision.<service>
 ├── <feature>/            e.g. auth, branch, notification
 │   ├── controller/       REST controllers only: validate, call the service, return DTOs in the envelope
-│   ├── service/          business rules, @Transactional, role and scope checks
+│   ├── service/          <Feature>Service: the interface other code injects
+│   │   └── impl/         <Feature>ServiceImpl: business rules, @Transactional, role and scope checks
 │   ├── repository/       Spring Data JPA repositories
 │   ├── dto/              request and response DTOs
 │   ├── entity/           JPA entities
@@ -26,7 +27,8 @@ com.ledgervision.<service>
                           (moves to ledgervision-common)
 ```
 
-- A feature uses another feature's **service**, never its repository.
+- Every service is an interface in `service/`, implemented by `<Name>ServiceImpl` in `service/impl/`. Inject the **interface**, never the `…Impl`.
+- A feature uses another feature's **service interface**, never its repository or `…Impl`.
 - Controllers never return or accept entities. Always DTOs.
 
 ## Lombok

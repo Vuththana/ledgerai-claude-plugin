@@ -23,6 +23,9 @@ Its contract comes from the approved plan and the flow: method, path, who may ca
 
 ## 2. Service (`<feature>/service`)
 
+Add the method to the feature's service interface in `service/`, and implement it in `service/impl/<Feature>ServiceImpl` (`spring.md` § Packages). In the implementation:
+
+
 1. **Role check.** Owner-only actions reject a manager with `403`.
 2. **Scope.** Load with `business_id` (and `branch_id` for a manager) from the current user. Not found or out of scope → `404`.
 3. **The flow's rules,** in the flow's order (the order decides which message the user sees).
@@ -33,7 +36,7 @@ Its contract comes from the approved plan and the flow: method, path, who may ca
 
 ## 3. Controller (`<feature>/controller`)
 
-- Path under `/api/v1`. `@Valid` on the request body. Get the current user from the security context.
+- Path under `/api/v1`. `@Valid` on the request body. Inject the service **interface**. Get the current user from the security context.
 - Thin: validate, call the service, and return `ResponseEntity<ApiResponse<T>>` built with `ApiResponse.ok(...)`, using the right status (`201` for a create; `200` with `data = null` when there's nothing to return). See `spring.md` § JSON and API.
 - Add `@Tag` / `@Operation` for springdoc.
 

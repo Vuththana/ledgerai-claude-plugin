@@ -44,7 +44,7 @@ Java 21, Spring Boot 3.5.16, Spring Cloud, Gradle (Groovy DSL), Spring Data JPA 
 
 ## Architecture
 
-- Package by feature: `com.ledgervision.<service>.<feature>.{controller,service,repository,dto,entity}`. Cross-cutting code in `com.ledgervision.<service>.common` until it moves to `ledgervision-common`.
+- Package by feature: `com.ledgervision.<service>.<feature>.{controller,service,repository,dto,entity}`. Each service is an interface in `service/` with its `<Name>ServiceImpl` in `service/impl/`; inject the interface. Cross-cutting code in `com.ledgervision.<service>.common` until it moves to `ledgervision-common`.
 - Every request: the JWT is validated (Keycloak), then the current user is loaded from `users`. Role, `business_id` and `branch_id` come from that row, never from token claims (`docs/TRD.md` §3b).
 - Every response is the envelope `ApiResponse { success, code, message, data, timestamp }` (`docs/TRD.md` §3a).
 - Other services are reached through OpenFeign clients by Consul name (the user's token forwarded; client credentials in jobs and listeners), or through RabbitMQ events (`docs/TRD.md` §3d).
