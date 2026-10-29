@@ -16,6 +16,8 @@ Tools are settled in `docs/TRD.md` §8: **JUnit 5 + Mockito** for unit tests, **
 
 Put tests in the same package as the code they test, under `src/test/java`.
 
+Integration tests extend the repo's `support/IntegrationTest` base class (containers, MockMvc, sign-up and token helpers): one `<Controller>IT` per controller. Reuse its helpers before writing new ones, and add new shared ones there. Test methods say who does what and what happens: `manager_seesOwnBranch`, `withoutToken_returns401`.
+
 ## Integration test setup
 
 Create these once per repo and reuse them:

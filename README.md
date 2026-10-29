@@ -79,8 +79,7 @@ Entities, security, error handling, ModelMapper, events and jobs are **not skill
 | Skill | Plugin | How | What it does |
 |---|---|---|---|
 | `review-feature` | ledgerai | `/ledgerai:review-feature <feature>` | Runs the `feature-reviewer` and `dictionary-checker` agents in parallel: the implementation requirement by requirement against the flow, step by step against the saved plan, plus the dictionary and role checks |
-| `check-hardcoded-values` | website-dev | Auto, before every `git push` | Scans the commits about to be pushed for hardcoded URLs, hosts, client IDs and secrets, and secrets in `NEXT_PUBLIC_` variables. Stops the push and lists what must go in the `.env` (and `.env.example`) |
-| `check-hardcoded-values` | springboot-dev | Auto, before every `git push` | The same for a service repo: hardcoded secrets (and secrets with a fallback), URLs, hosts and ports in Java, Consul config and compose files. Stops the push and lists what must become `${VAR}` and go in the `.env` (and `.env.example`) |
+| `check-hardcoded-values` | ledgerai | Auto, before every `git push` | Scans the commits about to be pushed, in any repo (web-ui, Spring service, ai-service), for hardcoded secrets, tokens, keys, URLs, hosts and ports, secrets with a fallback, and secrets in `NEXT_PUBLIC_` variables. Stops the push and lists what must go in the `.env` (and `.env.example`) |
 
 ### 05. Testing
 
@@ -99,7 +98,7 @@ Entities, security, error handling, ModelMapper, events and jobs are **not skill
 |---|---|---|---|
 | `review-pull-request` | website-dev | `/website-dev:review-pull-request [PR \| branch]` | Runs the `pr-reviewer-web` and `dictionary-checker` agents in parallel. Checks the diff against `TEAM-RULES.md` §9 and the matching `.claude/rules/`, plus mechanical checks (dictionary, `lib/mock` imports, dependencies, `docs/`, lint, build) |
 | `review-pull-request` | springboot-dev | `/springboot-dev:review-pull-request [PR \| branch]` | The same review for a service, with `pr-reviewer-api`: dictionary, edited migrations, table ownership, scope in queries, dependencies, secrets, error format, `docs/`, tests, build |
-| `manage-dependencies` | ledgerai | Auto | Checks whether a package is needed and evaluates it. In web-ui it fills in the `TEAM-RULES.md` §7 request template and never installs before approval; backend repos need no request |
+| `manage-dependencies` | ledgerai | Auto | Checks whether a package is needed and evaluates it. In web-ui it drafts the `TEAM-RULES.md` §7 request and files it as a row in the team's Package Requests sheet: requester = the member using Claude (git email → Team Member Roles), one confirmation with the browser to use, columns B–J only, then re-reads the sheet. Never installs before the row says Approved. Backend repos need no request |
 | `sync-project-specs` | ledgerai | `/ledgerai:sync-project-specs` | Reports whether `docs/` is behind, what changed (MAJOR/MINOR/PATCH) and what it affects, and updates on request |
 
 Use the built-in `/simplify` for refactoring and `/code-review` for a general bug hunt.
@@ -136,6 +135,7 @@ If an agent's results aren't good enough, raise its model one step in its file (
 | `qa-api` agent | springboot-dev | The service tester behind `/ledgerai:qa`: IDE diagnostics (`/ide`) and the feature's Gradle tests first, then every endpoint through Swagger UI (Playwright MCP), codes from Mailpit, database and Redis checked read-only. May start the local stack; never edits code |
 | ESLint hook | website-dev | After Claude edits a `.ts/.tsx/.js/.jsx/.mjs/.cjs` file, runs `node_modules/.bin/eslint --fix` on it. Does nothing without ESLint. Needs `jq` |
 | Compile-check hook | springboot-dev | After Claude edits a `.java` file, runs `./gradlew compileJava` (or `compileTestJava`) and hands any compiler errors back to Claude. Does nothing without a Gradle wrapper. Needs `jq` |
+| Package gate hook | website-dev | Before Claude runs a `pnpm` / `npm` / `yarn` / `bun` add, install or update in web-ui, checks the team's Package Requests sheet. With no Approved row it blocks the install and tells Claude to file the request (`manage-dependencies`) under the member using Claude; a request still waiting is never filed twice. Needs `python3` |
 
 ### Typical feature workflow
 
@@ -243,9 +243,9 @@ A skill that only lists facts or conventions is really a rule or a doc. Move it.
 
 ```
 .claude-plugin/marketplace.json
-plugins/ledgerai/        .claude-plugin/plugin.json · agents/ · skills/<name>/SKILL.md            (10 skills, 5 agents)
-plugins/website-dev/     .claude-plugin/plugin.json · agents/ · hooks/ · skills/<name>/SKILL.md  (8 skills, 3 agents)
-plugins/springboot-dev/  .claude-plugin/plugin.json · agents/ · hooks/ · skills/<name>/SKILL.md  (8 skills, 3 agents)
+plugins/ledgerai/        .claude-plugin/plugin.json · agents/ · skills/<name>/SKILL.md            (11 skills, 5 agents)
+plugins/website-dev/     .claude-plugin/plugin.json · agents/ · hooks/ · skills/<name>/SKILL.md  (7 skills, 3 agents)
+plugins/springboot-dev/  .claude-plugin/plugin.json · agents/ · hooks/ · skills/<name>/SKILL.md  (7 skills, 3 agents)
                          skills/setup-service/template/   settings.json · CLAUDE.md · rules/ for a service repo
 plugins/fastapi-dev/     .claude-plugin/plugin.json · agents/                                    (3 placeholder agents)
 templates/               project-settings.json · web-project-settings.json · workspace-settings.json (the folder holding every repo, for /ledgerai:dev-team)
@@ -294,6 +294,9 @@ The icon and license warnings only matter for the public plugin directory, so ig
 
 | Plugin | Version | Change |
 |---|---|---|
+| `ledgerai` | 0.11.0 | `manage-dependencies` files web-ui package requests in the team's Package Requests sheet under the member using Claude (git email → Team Member Roles), with one confirmation and a browser of their choice, and checks the saved row. One `check-hardcoded-values` skill for every stack replaces the website-dev and springboot-dev copies. `dev-team` files package requests with the user and runs the shared secrets check |
+| `website-dev` | 0.8.0 | New package gate hook: blocks installing a web-ui package with no Approved row in the Package Requests sheet and sends Claude to `manage-dependencies` (needs `python3`; tests in `tests/`). `check-hardcoded-values` moved to `ledgerai` |
+| `springboot-dev` | 0.13.0 | The service rules template writes down the team's existing `service/impl` convention: each service is an interface in `service/` with `<Name>ServiceImpl` in `service/impl/`, injected by interface; `add-endpoint` follows it. `check-hardcoded-values` moved to `ledgerai` The Spring rules now describe identity-service's conventions exactly: only the folders a feature needs, one service interface per area with `service/impl/…ServiceImpl`, request records and response classes, `is_*` fields with `@JsonProperty`, `<X>ResponseMapper` classes, `@AuthenticationPrincipal CurrentUser` and `messages.get(...)` success messages in controllers, static error factories, `TransactionTemplate` when a remote step comes first, and `support/IntegrationTest` with `who_whatHappens` test names. `add-endpoint` and `write-tests` follow them |
 | `ledgerai` | 0.10.0 | Approved plans are saved (docs v5.1.0): `document-feature` and `dev-team` write the approved plan to `plans/<flow file>.md` in a docs clone, on a `feature/<slug>` branch, and update it (with a Changes row) when the plan changes. `dev-team` hands developers and reviewers the plan file instead of a pasted copy, keeps the API reference entries on the same docs branch, and asks about pushing it at Gate 2. `feature-reviewer` checks the plan's steps, its API contract and work outside the plan. `feature-planner` returns a Changes line when it changes an approved plan |
 | `website-dev` | 0.7.0 | `frontend-dev` reads the approved plan from its file, again when it changes. `implement-feature` §0 looks for the plan in `docs/plans/` |
 | `springboot-dev` | 0.12.0 | `backend-dev` reads the approved plan from its file, and writes API reference entries on the docs branch the lead names. `implement-feature` §0 looks for the plan in `docs/plans/`. The `workflow.md` template says where the approved plan is saved |

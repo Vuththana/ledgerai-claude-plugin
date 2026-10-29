@@ -89,7 +89,7 @@ Start one developer per repo **in one message**, so they work in parallel, with:
 - **Questions** from a developer: ask the user, then SendMessage the answers.
 - **A change to the plan** (from an answer, or the user asks for one): continue the planner with SendMessage, and show the user the change. Once they approve it, update the plan file, add a row to its Changes table, commit, and tell every developer to read it again (`docs/TEAM-RULES.md` §3).
 - **Endpoints to confirm** (`add-endpoint` §6): show the user each endpoint and its draft API reference entry. When the user confirms one, tell that backend developer to write the entry in the docs clone, on the docs branch, without committing. You commit them in §7.
-- **Package requests** (web-ui): show the draft request. Nothing gets installed before the team approves it (`docs/TEAM-RULES.md` §7). Ask the user how to go on without it.
+- **Package requests** (web-ui): show the draft, then file it with the user as `ledgerai:manage-dependencies` §4 says (who's asking, which browser, confirm the row, fill the team sheet, check it saved). Nothing gets installed until the sheet says **Approved** (`docs/TEAM-RULES.md` §7). Ask the user how to go on without it.
 
 ## 4. Review
 
@@ -118,7 +118,7 @@ Send each **Blocker** and **Major** ❌ to its developer (that counts as a fix r
 
 ## 7. Before the push
 
-1. In each repo, follow its stack's `check-hardcoded-values` skill on the working tree. Show what it finds.
+1. In each repo, follow the `ledgerai:check-hardcoded-values` skill on the working tree. Show what it finds.
 2. **Docs branch:** if API reference entries were written, add them to the plan's `VERSION.md` entry with their **Impact** (new endpoints make it a MINOR), and commit them.
 3. Summarise, per repo: branch, files changed, checks run with their results, review verdicts, QA counts and report path, and what's still open (API reference entries not written yet, nits, flow gaps, dictionary gaps, findings left after two rounds). Then the docs branch: the plan file, its Changes rows, and the API reference entries on it.
 
