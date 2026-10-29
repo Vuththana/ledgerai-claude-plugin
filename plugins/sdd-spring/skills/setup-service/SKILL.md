@@ -71,12 +71,13 @@ Read `build.gradle`, `settings.gradle`, `gradle/wrapper/gradle-wrapper.propertie
 - Files created, merged, or skipped.
 - Placeholders still open, and why.
 - Differences from the TRD, and the dependencies still missing.
-- **Make CI required** (the repo owner does this once, on GitHub). Until then the workflow only reports; it doesn't block merges:
+- **Make CI required** on `dev` (where pull requests go) and `main` (the repo owner does this once, on GitHub). Until then the workflow only reports; it doesn't block merges:
   ```bash
-  gh api -X PUT repos/<owner>/<repo>/branches/main/protection --input - <<'EOF'
+  for b in dev main; do gh api -X PUT repos/<owner>/<repo>/branches/$b/protection --input - <<'EOF'
   {"required_status_checks":{"strict":true,"contexts":["build"]},"enforce_admins":true,
    "required_pull_request_reviews":{"required_approving_review_count":1},"restrictions":null}
   EOF
+  done
   ```
   Branch protection on a **private** repo needs a paid GitHub plan (Pro, Team or an organization plan); on the free plan, say so and suggest making the check a team rule in the meantime.
 - Next step: `/sdd:status`, then `/sdd:plan <feature>` for the first approved feature.

@@ -18,6 +18,7 @@ Feature specs and their status: [specs/README.md](specs/README.md).
 
 - Build **one feature at a time**. Finish it (merged, reviewed, working) before starting the next.
 - One feature per branch and per pull request. Shared pieces are fine when the current feature needs them.
+- In the code repos, branches start from `dev` and pull requests go into `dev`. Nobody commits to `main`; the repo owner merges `dev` into `main`.
 - A bug or gap in another feature: note it (issue or message). Don't fix it in this feature's PR unless it blocks you.
 
 ## 3. Spec first, then plan, then code

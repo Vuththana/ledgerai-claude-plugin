@@ -16,9 +16,9 @@ You'll be given a repo path (default: the current directory), what to review, an
 ## 1. Get the diff
 
 - PR number: `gh pr view <n>` and `gh pr diff <n>`
-- Branch: `git diff main...<branch>` and `git log --oneline main..<branch>`
-- Working tree (uncommitted work): `git diff main` and `git status --short` for new files
-- Nothing given: the current branch against `main`, plus the working tree if it has changes
+- Branch: `git diff origin/dev...<branch>` and `git log --oneline origin/dev..<branch>`
+- Working tree (uncommitted work): `git diff origin/dev` and `git status --short` for new files
+- Nothing given: the current branch against `origin/dev`, plus the working tree if it has changes
 
 Read changed files in full where the context matters. Read `.claude/rules/` yourself: the rules don't load on their own when the session started in another folder.
 
@@ -30,7 +30,7 @@ Read changed files in full where the context matters. Read `.claude/rules/` your
 
 | Check | How |
 |---|---|
-| No applied migration edited | `git diff --name-status main -- src/main/resources/db/migration/`: anything but `A` (added) is a blocker. Untracked migrations are new |
+| No applied migration edited | `git diff --name-status origin/dev -- src/main/resources/db/migration/`: anything but `A` (added) is a blocker. Untracked migrations are new |
 | Only this service's tables | Every table in new migrations and entities is this service's in `TRD.md` §1a, in its schema |
 | Scope in every query | Repository methods on scoped tables filter by `business_id` (and `branch_id` for managers). No scope read from the request |
 | Dependencies | Any diff to `build.gradle`, `settings.gradle` or `gradle/` is listed in the PR description, needed by this feature, and doesn't change the Spring Boot, Java or Gradle version (`packages.md`) |

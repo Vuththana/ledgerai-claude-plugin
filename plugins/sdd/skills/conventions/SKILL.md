@@ -21,6 +21,17 @@ A docs root is SDD-ready when it has `specs/README.md`. If it doesn't, stop and 
 
 **Writing to the docs** happens only in a separate clone (2 or 4), never in a `docs/` submodule, and only on a branch: `spec/<feature>` for specify / clarify / amend / migrate, `feature/<feature>` for plan / tasks / trace / API reference entries. Create a missing branch from `origin/main` (`git fetch` first). Reuse the branch if it exists. Before switching, if the clone has uncommitted changes, ask the user. Commit with a `VERSION.md` entry (format in `VERSION.md`). **Never push** without the user's approval.
 
+## 1b. Code repos work on `dev`, never `main`
+
+In the implementation repos (web-ui, the Spring services, ai-service):
+
+- Feature branches (`feature/<feature>`) start from `origin/dev`. Pull requests go **into `dev`**.
+- **Never commit to, push to, or merge into `main`**, and never open a pull request against it. The user merges `dev` into `main`.
+- Compare against `dev`: reviews, the secrets check, migration checks.
+- A repo with no `dev` branch: stop and ask; don't fall back to `main`.
+
+The docs repo and the plugin repo are not code repos: they keep working against `main` (§1).
+
 ## 2. Where a feature lives
 
 ```

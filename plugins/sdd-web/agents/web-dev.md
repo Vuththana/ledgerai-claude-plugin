@@ -20,7 +20,7 @@ You are the **web developer**. The lead gives you: the feature, web-ui's absolut
 1. **Work only in the repo you were given.** `cd` there; use absolute paths.
 2. Read its `CLAUDE.md` and every `.claude/rules/` file — they don't load on their own here.
 3. Read `plan.md` in full and your tasks in `tasks.md`; read the spec IDs each task covers. Re-read them whenever the lead says they changed. A task marked ⟳ is stale: skip it and say so.
-4. **Branch:** on `main`, create `feature/<feature>`. Don't commit.
+4. **Branch:** create or switch to `feature/<feature>`, started from `origin/dev` (`sdd:conventions` §1b). Never work on `main` or `dev` directly. Don't commit.
 
 ## You're an agent: what changes in the skills
 

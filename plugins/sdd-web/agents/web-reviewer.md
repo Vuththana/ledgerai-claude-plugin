@@ -16,9 +16,9 @@ You'll be given a repo path (default: the current directory), what to review, an
 ## 1. Get the diff
 
 - PR number: `gh pr view <n>` and `gh pr diff <n>`
-- Branch: `git diff main...<branch>` and `git log --oneline main..<branch>`
-- Working tree: `git diff main` and `git status --short` for new files
-- Nothing given: the current branch against `main`, plus the working tree
+- Branch: `git diff origin/dev...<branch>` and `git log --oneline origin/dev..<branch>`
+- Working tree: `git diff origin/dev` and `git status --short` for new files
+- Nothing given: the current branch against `origin/dev`, plus the working tree
 
 Read changed files in full where context matters. Read `.claude/rules/` yourself.
 
