@@ -15,14 +15,16 @@ In one message, start two agents with the Agent tool, so they run in parallel:
 
 | Agent (`subagent_type`) | Prompt |
 |---|---|
-| `ledgerai:feature-reviewer` | Review the **$ARGUMENTS** feature in **<absolute path of this repo>**. |
+| `ledgerai:feature-reviewer` | Review the **$ARGUMENTS** feature in **<absolute path of this repo>**. Approved plan: **<plan file>**. |
 | `ledgerai:dictionary-checker` | Check the **$ARGUMENTS** feature's code in **<absolute path of this repo>** against the dictionary: its types, forms, mock data and API code, or its migrations, entities and DTOs. |
+
+The plan file is `docs/plans/<flow file>.md`. If it isn't merged into `docs/` yet, use its path in the docs clone (`/ledgerai:document-feature` step 3) when you know it. With neither, leave that sentence out.
 
 ## 2. Report
 
 Merge the two replies into one report:
 
-1. **Summary:** done / missing / different counts, and the dictionary-checker's mismatch count.
+1. **Summary:** done / missing / different counts, plan steps done / not done, and the dictionary-checker's mismatch count.
 2. **Blocking:** missing requirements, role leaks, dictionary mismatches.
 3. **Should fix:** missing states, messages that differ from the flow.
 4. **Flow gaps** and **Dictionary gaps:** for the team.

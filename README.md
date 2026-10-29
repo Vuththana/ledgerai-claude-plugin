@@ -31,7 +31,7 @@ Plugins can't ship `CLAUDE.md` or rules files: Claude Code only loads skills, ag
 `/ledgerai:dev-team <feature>` runs a whole feature with agents, across every repo it touches. You step in twice: to approve the plan, and to approve the push.
 
 ```
-requirements-analyst → feature-planner → ⏸ you approve the plan
+requirements-analyst → feature-planner → ⏸ you approve the plan → saved as plans/<feature>.md
   → backend-dev (one per service) ∥ frontend-dev        build in parallel, on the plan's API contract
   → feature-reviewer ∥ dictionary-checker ∥ pr-reviewer-*   review in parallel
   → findings back to the same developer (at most two rounds)
@@ -50,7 +50,7 @@ Your main session is the **lead**: it starts every agent, passes the brief, plan
 | Skill | Plugin | How | What it does |
 |---|---|---|---|
 | `analyze-requirements` | ledgerai | Auto | Reads the feature's flow and dictionary tables, separates settled from draft, and lists conflicts and gaps with doc references |
-| `document-feature` | ledgerai | `/ledgerai:document-feature <feature>` | Has the `feature-planner` agent write the plan required by `TEAM-RULES.md` §3 before any code. Stops on 📝 draft flows and asks their open questions |
+| `document-feature` | ledgerai | `/ledgerai:document-feature <feature>` | Has the `feature-planner` agent write the plan required by `TEAM-RULES.md` §3 before any code. Stops on 📝 draft flows and asks their open questions. Once you approve, saves the plan in a docs clone as `plans/<flow file>.md` (format in the docs' `plans/README.md`), on a `feature/<slug>` branch, and asks before pushing |
 | `audit-flow` | ledgerai | `/ledgerai:audit-flow <flow \| drafts>` | One `flow-auditor` agent per 📝 flow, in parallel: open questions with options, conflicts with the dictionary, API reference, TRD and other flows, missing endpoints, uncovered edge cases. Works in a code repo or the docs repo |
 | `identify-edge-cases` | ledgerai | Auto | A checklist of *what to look for* (states, validation, permissions, limits). The values come from the docs |
 
@@ -78,7 +78,7 @@ Entities, security, error handling, ModelMapper, events and jobs are **not skill
 
 | Skill | Plugin | How | What it does |
 |---|---|---|---|
-| `review-feature` | ledgerai | `/ledgerai:review-feature <feature>` | Runs the `feature-reviewer` and `dictionary-checker` agents in parallel: the implementation requirement by requirement against the flow, plus the dictionary and role checks |
+| `review-feature` | ledgerai | `/ledgerai:review-feature <feature>` | Runs the `feature-reviewer` and `dictionary-checker` agents in parallel: the implementation requirement by requirement against the flow, step by step against the saved plan, plus the dictionary and role checks |
 | `check-hardcoded-values` | website-dev | Auto, before every `git push` | Scans the commits about to be pushed for hardcoded URLs, hosts, client IDs and secrets, and secrets in `NEXT_PUBLIC_` variables. Stops the push and lists what must go in the `.env` (and `.env.example`) |
 | `check-hardcoded-values` | springboot-dev | Auto, before every `git push` | The same for a service repo: hardcoded secrets (and secrets with a fallback), URLs, hosts and ports in Java, Consul config and compose files. Stops the push and lists what must become `${VAR}` and go in the `.env` (and `.env.example`) |
 
@@ -124,7 +124,7 @@ If an agent's results aren't good enough, raise its model one step in its file (
 |---|---|---|
 | `requirements-analyst` agent | ledgerai | The dev team's analyst: reads the flow, dictionary, JSONB shapes, API reference and TRD, and returns one brief with the owning services, edge cases and blockers. Read-only |
 | `feature-planner` agent | ledgerai | The planner behind `/ledgerai:document-feature` and the dev team: the `TEAM-RULES.md` §3 plan across every repo involved, with the API contract between them. Read-only |
-| `feature-reviewer` agent | ledgerai | The reviewer behind `/ledgerai:review-feature`: requirement by requirement against the flow, roles and branch scope, edge cases, across repos. Read-only |
+| `feature-reviewer` agent | ledgerai | The reviewer behind `/ledgerai:review-feature`: requirement by requirement against the flow, the saved plan's steps and API contract, roles and branch scope, edge cases, across repos. Read-only |
 | `flow-auditor` agent | ledgerai | The auditor behind `/ledgerai:audit-flow`: what a 📝 flow still needs before approval. Read-only |
 | `dictionary-checker` agent | ledgerai | Compares types, forms, validation, mock data, JPA entities, DTOs, Pydantic models and Flyway migrations with `docs/data-dictionary/`, and reports mismatches. Never edits the dictionary |
 | `frontend-dev` agent | website-dev | The dev team's web developer: builds the web-ui part of an approved plan with `implement-feature` and `figma-design`, runs lint and build, and hands questions and package requests back to the lead. Doesn't commit |
@@ -141,7 +141,7 @@ If an agent's results aren't good enough, raise its model one step in its file (
 
 ```
 /ledgerai:sync-project-specs          docs up to date?
-/ledgerai:document-feature <feature>  plan → team approves
+/ledgerai:document-feature <feature>  plan → team approves → plans/<feature>.md
   build: implement-feature (rules load as files are touched)
 /ledgerai:review-feature <feature>    matches the flow?
 /ledgerai:qa <feature>                works in the browser / through Swagger UI?
@@ -294,6 +294,9 @@ The icon and license warnings only matter for the public plugin directory, so ig
 
 | Plugin | Version | Change |
 |---|---|---|
+| `ledgerai` | 0.10.0 | Approved plans are saved (docs v5.1.0): `document-feature` and `dev-team` write the approved plan to `plans/<flow file>.md` in a docs clone, on a `feature/<slug>` branch, and update it (with a Changes row) when the plan changes. `dev-team` hands developers and reviewers the plan file instead of a pasted copy, keeps the API reference entries on the same docs branch, and asks about pushing it at Gate 2. `feature-reviewer` checks the plan's steps, its API contract and work outside the plan. `feature-planner` returns a Changes line when it changes an approved plan |
+| `website-dev` | 0.7.0 | `frontend-dev` reads the approved plan from its file, again when it changes. `implement-feature` §0 looks for the plan in `docs/plans/` |
+| `springboot-dev` | 0.12.0 | `backend-dev` reads the approved plan from its file, and writes API reference entries on the docs branch the lead names. `implement-feature` §0 looks for the plan in `docs/plans/`. The `workflow.md` template says where the approved plan is saved |
 | `ledgerai` | 0.9.0 | The dev team: new `/ledgerai:dev-team <feature>` (analyst → planner → approval → developers in parallel → reviewers in parallel → fixes → QA → push approval) and `/ledgerai:audit-flow <flow \| drafts>`. New `requirements-analyst`, `feature-planner`, `feature-reviewer` and `flow-auditor` agents. `document-feature` and `review-feature` now run the planner and reviewer agents (their steps moved into the agents), `review-feature` next to `dictionary-checker` in parallel. `dictionary-checker` checks Pydantic models and works in a given repo path; `qa-method` too. `/ledgerai:qa` knows ai-service. New `templates/workspace-settings.json`. Every agent sets its model and effort (`dictionary-checker` on haiku; see Agents and hooks) |
 | `website-dev` | 0.6.0 | New `frontend-dev` agent (the dev team's web developer) and `pr-reviewer-web` agent. `review-pull-request` now runs `pr-reviewer-web` and `dictionary-checker` in parallel (its checks moved into the agent), and can review the working tree. `qa-web` runs on sonnet |
 | `springboot-dev` | 0.11.0 | New `backend-dev` agent (the dev team's service developer) and `pr-reviewer-api` agent. `review-pull-request` now runs `pr-reviewer-api` and `dictionary-checker` in parallel (its checks moved into the agent), and can review the working tree. `qa-api` runs on sonnet |

@@ -9,7 +9,8 @@ description: Build an approved LedgerVision feature in a Spring Boot service ste
 
 ## 0. Gate
 
-- The feature has an **approved plan** (`/ledgerai:document-feature`). No plan → write one first and wait for approval.
+- The feature has an **approved plan**, saved as `docs/plans/<flow file>.md` (or on its docs branch while that pull request is open). No plan → write one first with `/ledgerai:document-feature` and wait for approval.
+- If the plan has to change, update its file first (`docs/TEAM-RULES.md` §3), then the code.
 - Its flow is ✅ approved, or the parts you build are settled (`feature-flows.md`).
 - It's the one feature being worked on (`workflow.md`), on its own branch.
 - **This service owns it** (`docs/TRD.md` §1a). If the plan writes another service's tables, stop: that's an API call or an event instead.

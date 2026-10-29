@@ -21,8 +21,8 @@ Don't write code for a feature until its plan is written and approved.
    - who can do what (`BUSINESS_OWNER` / `BRANCH_MANAGER`) and how branch scope is applied
    - any new dependency you need, and why (see `packages.md`)
    - questions or conflicts you found in the flow, the dictionary or the TRD
-3. **Get the plan approved**, then build it.
-4. If the plan has to change partway through, update it and tell the team before you continue.
+3. **Get the plan approved**, then build it. The approved plan is saved as `docs/plans/<flow file>.md`, in a docs pull request merged no later than the code (`docs/plans/README.md`).
+4. If the plan has to change partway through, update its file and tell the team before you continue.
 
 When Claude is asked to build a feature, it writes the plan first and waits for approval before editing code.
 
