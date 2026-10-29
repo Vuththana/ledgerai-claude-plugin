@@ -1,0 +1,8 @@
+{
+  "name": "sdd-fastapi",
+  "version": "1.0.0",
+  "description": "SDD for LedgerVision ai-service (FastAPI): placeholder ai-dev, qa-ai and ai-eval agents until the repo exists and TRD Q4 and Q21 are settled",
+  "author": {
+    "name": "Vuththana"
+  }
+}

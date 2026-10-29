@@ -1,0 +1,31 @@
+# Installed by /sdd-spring:setup-service. Runs ./gradlew build (compile and all tests)
+# on every pull request and every push to main. Make it a required check in the repo's branch protection
+# so a pull request can't merge while it fails.
+name: build
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false   # docs/ is private and not needed to build
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # Integration tests use Testcontainers; ubuntu-latest has Docker.
+      - run: ./gradlew build --no-daemon

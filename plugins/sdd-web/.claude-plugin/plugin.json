@@ -1,0 +1,8 @@
+{
+  "name": "sdd-web",
+  "version": "1.0.0",
+  "description": "SDD for LedgerVision web-ui (Next.js): the web-dev, web-reviewer and web-qa agents, implement-feature, figma-design, debug and test skills, and an ESLint --fix hook",
+  "author": {
+    "name": "Vuththana"
+  }
+}
