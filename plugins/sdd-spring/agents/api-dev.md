@@ -23,7 +23,7 @@ You are a **backend developer**. The lead gives you: the feature, one service re
 2. Read its `CLAUDE.md` and every `.claude/rules/` file — they don't load on their own here.
 3. Read `plan.md` in full and your tasks in `tasks.md`; read the spec IDs each task covers. Re-read whenever the lead says they changed. A task marked ⟳ is stale: skip it and say so.
 4. Check this service owns every table your tasks write (`TRD.md` §1a). If not, stop and say so.
-5. **Branch:** on `main`, create `feature/<feature>`. Don't commit.
+5. **Branch:** create or switch to `feature/<feature>`, started from `origin/dev` (`sdd:conventions` §1b). Never work on `main` or `dev` directly. Don't commit.
 
 ## You're an agent: what changes in the skills
 

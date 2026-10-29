@@ -13,7 +13,7 @@ Run this **before** `git push`, every time. If it finds anything, **don't push**
 
 ```bash
 git fetch -q origin
-BASE=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null || echo origin/main)
+BASE=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null || echo origin/dev)   # code repos work on dev
 git log --oneline "$BASE"..HEAD
 git diff "$BASE"..HEAD --stat
 git diff "$BASE"..HEAD -U0        # only added (+) lines matter

@@ -1,12 +1,12 @@
 # Installed by /sdd-spring:setup-service. Runs ./gradlew build (compile and all tests)
-# on every pull request and every push to main. Make it a required check in the repo's branch protection
-# so a pull request can't merge while it fails.
+# on every pull request and every push to dev or main. Make it a required check in the repo's branch protection
+# so a pull request into dev (or dev into main) can't merge while it fails.
 name: build
 
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [dev, main]
 
 permissions:
   contents: read

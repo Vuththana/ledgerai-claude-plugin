@@ -17,6 +17,11 @@ Don't write code for a feature until its spec is ✅, its plan is approved and i
 
 When Claude is asked to build a feature, it checks for an approved plan and tasks first and never edits code without them.
 
+## Branches
+
+- Work on `feature/<feature>`, started from `origin/dev`. Pull requests go into **`dev`**.
+- **Never commit to, push to, or merge into `main`.** The repo owner merges `dev` into `main`.
+
 ## Before opening a pull request
 
 - `./gradlew build` passes (all unit and integration tests).

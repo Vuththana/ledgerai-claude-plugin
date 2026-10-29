@@ -29,7 +29,7 @@ Per repo: branch, files changed, checks with results (build, lint, tests), revie
 
 Ask the user, per repo and for the docs branch, whether to **commit and push**. Do only what they approve:
 
-- Code repos: commit on `feature/<feature>` with a message naming the feature and the task IDs (`Branch management: T01–T09 (BRN)`), then `git push -u origin feature/<feature>`.
+- Code repos: commit on `feature/<feature>` with a message naming the feature and the task IDs (`Branch management: T01–T09 (BRN)`), then `git push -u origin feature/<feature>`. **Never push to `main` or `dev` directly** (`sdd:conventions` §1b).
 - Docs branch: `git push -u origin feature/<feature>` (and `spec/<feature>` if it isn't merged yet).
 
-Opening pull requests is a separate question. The docs PR merges no later than the code.
+Opening pull requests is a separate question. Code-repo PRs target **`dev`** (`gh pr create --base dev`), never `main`; the user merges `dev` into `main`. Never merge a code-repo PR into `main`. The docs PR merges no later than the code.

@@ -31,7 +31,7 @@ Load the `sdd:conventions` skill first and follow it. You are the **lead**: you 
 
 One developer per repo, **in one message** so they work in parallel, each with its own tasks in file order:
 
-> Build tasks **<T ids>** of the **<feature>** feature in **<abs repo path>**. Docs root: **<abs>**. Spec: **<abs spec.md>** · Plan: **<abs plan.md>** · Tasks: **<abs tasks.md>**. Read the plan in full and your tasks before you start, and again whenever I say they changed.
+> Build tasks **<T ids>** of the **<feature>** feature in **<abs repo path>**. Docs root: **<abs>**. Spec: **<abs spec.md>** · Plan: **<abs plan.md>** · Tasks: **<abs tasks.md>**. Read the plan in full and your tasks before you start, and again whenever I say they changed. Work on `feature/<feature>` from `origin/dev`; never on `main`.
 
 - A task `after` another repo's open task: hold that developer's dependent tasks back and send them when the dependency reports done (SendMessage). web-ui builds on the mock against the plan's §3 contract, so it rarely waits.
 - Keep the user posted in one line per step: who's running, what came back.

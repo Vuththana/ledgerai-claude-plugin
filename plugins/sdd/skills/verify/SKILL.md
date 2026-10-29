@@ -11,13 +11,13 @@ Load the `sdd:conventions` skill first and follow it. You are the lead.
 
 ## 1. Inputs
 
-The docs clone (branch `feature/<feature>`), the feature's spec / plan / tasks, and the repos the plan's §2 names (absolute paths). Each repo should be on `feature/<feature>` with the work in its tree.
+The docs clone (branch `feature/<feature>`), the feature's spec / plan / tasks, and the repos the plan's §2 names (absolute paths). Each repo should be on `feature/<feature>`, branched from `dev`, with the work in its tree.
 
 ## 2. Review — all in one message
 
 - `sdd:spec-reviewer` once: *Review the **<feature>** feature. Docs root: **<abs>**. Spec / plan / tasks: **<abs paths>**. Repos: **<abs paths>**.*
-- Per repo, `sdd:dictionary-checker`: *Check the files changed in **<repo>** (working tree against `main`). Docs root: **<abs>**.*
-- Per repo, its stack reviewer — `sdd-web:web-reviewer` or `sdd-spring:api-reviewer`: *Review the working tree of **<repo>** against `main`. Docs root: **<abs>**. Plan: **<abs plan.md>**.*
+- Per repo, `sdd:dictionary-checker`: *Check the files changed in **<repo>** (working tree against `origin/dev`). Docs root: **<abs>**.*
+- Per repo, its stack reviewer — `sdd-web:web-reviewer` or `sdd-spring:api-reviewer`: *Review the working tree of **<repo>** against `origin/dev`. Docs root: **<abs>**. Plan: **<abs plan.md>**.*
 
 ## 3. Fix — at most two rounds
 
