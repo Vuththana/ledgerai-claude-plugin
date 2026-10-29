@@ -13,42 +13,53 @@ If the repo already has a class for something below (`ApiResponse`, `GlobalExcep
 
 ## Packages: by feature
 
+identity-service is the reference: when in doubt, do what it does.
+
 ```
 com.ledgervision.<service>
-├── <feature>/            e.g. auth, branch, notification
-│   ├── controller/       REST controllers only: validate, call the service, return DTOs in the envelope
-│   ├── service/          <Feature>Service: the interface other code injects
-│   │   └── impl/         <Feature>ServiceImpl: business rules, @Transactional, role and scope checks
-│   ├── repository/       Spring Data JPA repositories
-│   ├── dto/              request and response DTOs
+├── <feature>/            e.g. auth, business, user, branch
+│   ├── controller/       REST controllers (only features with endpoints)
+│   ├── dto/              request records and response classes (only features with endpoints)
 │   ├── entity/           JPA entities
-│   └── client/           OpenFeign clients to other services (when the feature needs one)
-└── common/               envelope and error handling, security, config, Feign, mail, storage, events
+│   ├── repository/       Spring Data JPA repositories
+│   ├── client/           OpenFeign clients to other services (only when the feature calls one)
+│   └── service/          service interfaces, plus the helpers they share (<X>ResponseMapper, PasswordPolicy)
+│       └── impl/         <Name>ServiceImpl: business rules, @Transactional, role and scope checks
+└── common/               config, exception, i18n, response, security, keycloak, mail, otp, storage
                           (moves to ledgervision-common)
 ```
 
-- Every service is an interface in `service/`, implemented by `<Name>ServiceImpl` in `service/impl/`. Inject the **interface**, never the `…Impl`.
-- A feature uses another feature's **service interface**, never its repository or `…Impl`.
-- Controllers never return or accept entities. Always DTOs.
+- **Only the folders a feature needs.** A feature other features call but that has no endpoints of its own (`branch`, `auditlog`, `invitation` in identity-service) has just `entity/`, `repository/` and `service/`.
+- **One service interface per area of work**, not one per feature: `auth` has `AuthService`, `SessionService`, `PasswordResetService`, `EmailVerificationService`, and so on. Each is implemented by `<Name>ServiceImpl` in `service/impl/` (`@Service`, `@RequiredArgsConstructor`, `implements <Name>Service`). Inject the **interface**, never the `…Impl`. Services in `common/` (`MailService`, `OtpService`, `FileStorageService`, `TokenRevocationService`) follow the same interface + `impl/` pattern.
+- A feature uses another feature's **service interface**, never its repository or `…Impl`. A service that only other features call may take and return entities (`BranchService.createMainBranch(...)` returns a `Branch`). What a controller gets back is always a DTO.
+- Controllers never return or accept entities.
+- Entities and service interfaces start with a one-line Javadoc naming their dictionary table or flow section (`/** {@code branches} (docs/data-dictionary/business-and-branches.md#branches). */`).
 
 ## Lombok
 
 - Entities: `@Getter`, `@Setter`, `@NoArgsConstructor`. **Never `@Data`, `@EqualsAndHashCode` or `@ToString` on entities**: they break with lazy relations and JPA identity.
 - Services and components: `@RequiredArgsConstructor` with `private final` fields (constructor injection). No `@Autowired` on fields.
-- DTOs: `@Getter` / `@Setter` / `@NoArgsConstructor` (or `@Data`).
+- Request DTOs: Java **records** with Bean Validation whose messages are keys (`@NotBlank(message = "{validation.required}")`, `@Size(max = 50, message = "{validation.max_length}")`) and `@Schema(example = ...)`. Nested parts are nested records (`BusinessSetupRequest.MainBranch`).
+- Response DTOs: **classes** with `@Getter`, `@Setter`, `@NoArgsConstructor` (plus `@AllArgsConstructor` on a wrapper), so ModelMapper can fill them. Nested parts are nested `static` classes (`BusinessSetupResponse.BranchResponse`).
+- `is_*` columns: the Java field drops the prefix (`active`, `mainBranch`), with `@Column(name = "is_active")` on the entity and `@JsonProperty("is_active")` on the response DTO.
 - Logging: `@Slf4j`.
 
 ## ModelMapper
 
 - One `ModelMapper` bean in `common/config`, with `MatchingStrategies.STRICT`.
-- Map entity → response DTO in the service layer.
+- Map entity → response DTO in the service layer: `modelMapper.map(branch, BranchResponse.class)`.
+- A mapping that needs more than matching names gets its own `<X>ResponseMapper` class in `service/`, built on a ModelMapper `TypeMap` (`ProfileResponseMapper`, `MeResponseMapper`), with a unit test.
 - **Never map a request DTO straight onto an entity for protected fields**: `user_id`, `business_id`, `branch_id`, `role_id`, `is_active`, `created_at`, money conversions. Set those explicitly in the service.
 
 ## JSON and API
 
 - Jackson uses `PropertyNamingStrategies.SNAKE_CASE` globally, so Java `usdEquivalent` is `usd_equivalent` on the wire. Each JSON name must be the dictionary name (`data-dictionary.md`).
 - Every path starts with `/api/v1` (`docs/TRD.md` §3a).
-- **Every response is the envelope** `ApiResponse { success, code, message, data, timestamp }` (`docs/TRD.md` §3a). Controllers return `ResponseEntity<ApiResponse<T>>` built with `ApiResponse.ok(...)` or `ApiResponse.created(...)`, which set `code` to the HTTP status name (`OK`, `CREATED`; docs v4.3.0). Never a bare DTO or a different wrapper.
+- **Every response is the envelope** `ApiResponse { success, code, message, data, timestamp }` (`docs/TRD.md` §3a). `ApiResponse.ok(...)` and `ApiResponse.created(...)` set `code` to the HTTP status name (`OK`, `CREATED`; docs v4.3.0). Never a bare DTO or a different wrapper.
+- Controllers: `@RestController`, `@RequestMapping("/api/v1/<resource>")`, `@RequiredArgsConstructor`, injecting the service interfaces and `Messages`. The signed-in user is a parameter, `@AuthenticationPrincipal CurrentUser currentUser`, passed on to the service.
+  - `200`: return `ApiResponse<T>` directly: `return ApiResponse.ok(messages.get("user.profile.success"), profileService.get(currentUser));`
+  - `201`: `return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.created(messages.get("business.setup.success"), ...));`
+  - The success message is a `messages.properties` key, `<feature>.<action>.success`.
 - API docs: springdoc-openapi. Give each controller a `@Tag` and each endpoint an `@Operation` summary, so the web UI team can read the contract in Swagger UI.
 - Status codes: `200` OK, `201` created (no `204`: every endpoint returns the envelope), `400` validation, `401` not signed in / revoked / deactivated, `403` wrong role, `404` not found **or outside the caller's scope**, `409` conflict, `410` expired link, `429` limits and cooldowns.
 - Timestamps are ISO-8601 in UTC.
@@ -56,6 +67,7 @@ com.ledgervision.<service>
 ## Errors
 
 - Throw `ApiException(HttpStatus, code, messageKey, args...)` for every expected failure. `code` is a stable UPPER_SNAKE string from the flow or the plan (`EMAIL_ALREADY_REGISTERED`).
+- A failure thrown in more than one place gets a private static factory in the `…Impl` (`private static ApiException emailTaken()`). Checks Bean Validation can't do (the password policy) throw `ApiException.validationFailed(fieldErrors)`; extra details go in `.withData(...)`.
 - One `@RestControllerAdvice` (`GlobalExceptionHandler`) turns every exception into the envelope with `success = false` and the right HTTP status:
   - `ApiException`: its `code`, and its message from `messages.properties`. `data` is `null`, or the extra details the flow needs (e.g. `retry_after_seconds`).
   - Bean Validation errors become `400 VALIDATION_FAILED`, with `data` = the field errors keyed by the JSON (dictionary) field name, e.g. `user_name`, not `userName`.
@@ -92,7 +104,7 @@ com.ledgervision.<service>
 
 ## Transactions, other services and events
 
-- `@Transactional` on service methods that write. Keep remote calls (Keycloak, other services, SMTP) out of open transactions where possible. If a remote step and a DB step must both succeed, undo the remote one when the DB step fails.
+- `@Transactional` on the `…Impl` methods that write. Keep remote calls (Keycloak, other services, SMTP, S3) out of open transactions. When a remote step must come first, do it before the transaction, run the database part in `transactionTemplate.execute(...)`, and undo the remote step if that fails (`BusinessSetupServiceImpl`: upload the logo, create the business in the template, delete the logo on failure).
 - Other services (`docs/TRD.md` §3d):
   - Call them through an **OpenFeign** client in `<feature>/client`, by Consul service name: `@FeignClient(name = "finance-service")`.
   - Every client has a Resilience4j circuit breaker and time limiter (configured in Consul) and a fallback or a clear `ApiException` when the other service is down. Never hang or return a fake success.
@@ -121,9 +133,10 @@ com.ledgervision.<service>
 
 ## Tests
 
-- Unit tests: JUnit 5 + Mockito, for services and helpers. Name them `<Class>Test`.
+- Unit tests: JUnit 5 + Mockito, for services and helpers (`<X>ResponseMapper`, `PasswordPolicy`, an `…Impl`). Name them `<Class>Test`, in the same package as the class.
 - Integration tests:
-  - `@SpringBootTest` + Testcontainers (`postgres:17`, Redis, RabbitMQ) via `@ServiceConnection`. Name them `<Class>IT`.
+  - One per controller, `<Controller>IT`, extending `support/IntegrationTest` (`@SpringBootTest`, MockMvc, profile `it`, Testcontainers `postgres:17` and Redis via `@ServiceConnection`; add RabbitMQ when a feature needs it). Shared helpers (sign-up, tokens, codes) live in that base class.
+  - Test methods say who does what and what happens: `owner_seesProfileWithoutBranch`, `manager_seesOwnBranch`, `withoutToken_returns401`.
   - Tests run without Consul: turn off Consul config and discovery in the `test` profile (`spring.cloud.consul.enabled=false`, `spring.config.import=optional:consul:`), and set the schema and Flyway settings there.
   - Fake the external parts (Keycloak, SMTP, other services' Feign clients, S3). Don't call real ones.
 - For every endpoint, test:
