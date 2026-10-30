@@ -25,15 +25,17 @@ Load the `sdd:conventions` skill first and follow it. You are the **lead**: you 
    | `pyproject.toml` with `fastapi` | `sdd-fastapi:ai-dev` (placeholder) | `sdd-fastapi:qa-ai` (placeholder) |
 
    A developer whose plugin isn't enabled: stop and say which plugin to enable (or start from the workspace folder with `templates/workspace-settings.json`). An ai-service task: `ai-dev` is a placeholder — say the AI part isn't ready and what it waits on, and build the rest.
-4. **Which tasks:** the IDs in $ARGUMENTS after the feature, else every open task (`[ ]`, not ⟳).
+4. **Which tasks:** the IDs in $ARGUMENTS after the feature, else every open task (`[ ]`, not ⟳). For web-ui, only the **current milestone's** phase (conventions §1c): in M1, the M2 tasks stay open and aren't sent; an M2 task named in $ARGUMENTS during M1 → say the team is still in M1 and leave it out. In M1, check the plan's §4 names a Figma frame for every screen the tasks build; a screen without one waits (say which).
 
 ## 1. Start the developers
 
 One developer per repo, **in one message** so they work in parallel, each with its own tasks in file order:
 
-> Build tasks **<T ids>** of the **<feature>** feature in **<abs repo path>**. Docs root: **<abs>**. Spec: **<abs spec.md>** · Plan: **<abs plan.md>** · Tasks: **<abs tasks.md>**. Read the plan in full and your tasks before you start, and again whenever I say they changed. Work on `feature/<feature>` from `origin/dev`; never on `main`.
+> Build tasks **<T ids>** of the **<feature>** feature in **<abs repo path>**. Docs root: **<abs>**. Spec: **<abs spec.md>** · Plan: **<abs plan.md>** · Tasks: **<abs tasks.md>**. <web-ui: "Milestone: **M1 static UI** | **M2 integration**."> Read the plan in full and your tasks before you start, and again whenever I say they changed. Work on `<branch>` from `origin/dev`; never on `main`.
 
-- A task `after` another repo's open task: hold that developer's dependent tasks back and send them when the dependency reports done (SendMessage). web-ui builds on the mock against the plan's §3 contract, so it rarely waits.
+  The branch is `feature/<feature>`, or `feature/<feature>-integration` for web-ui's M2 (conventions §1c).
+
+- A task `after` another repo's open task: hold that developer's dependent tasks back and send them when the dependency reports done (SendMessage). web-ui's M1 tasks never wait for a service; its M2 tasks wait for the endpoints they call.
 - Keep the user posted in one line per step: who's running, what came back.
 
 ## 2. While they work

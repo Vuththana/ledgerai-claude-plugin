@@ -41,7 +41,7 @@ HOW TO WRITE THIS FILE (delete nothing below; replace the <placeholders>)
 
 ## 4. Journeys
 
-> Diagrams are Mermaid. Steps marked *server* are simulated by the web-ui mock until the endpoint exists.
+> Diagrams are Mermaid. Steps marked *server* happen in the service; web-ui's static UI (M1) only shows their result from placeholder data, and its integration (M2) calls the endpoint.
 
 ### 4a. <Journey name>
 

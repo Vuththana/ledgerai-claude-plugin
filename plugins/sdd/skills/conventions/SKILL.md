@@ -32,6 +32,21 @@ In the implementation repos (web-ui, the Spring services, ai-service):
 
 The docs repo and the plugin repo are not code repos: they keep working against `main` (§1).
 
+## 1c. web-ui milestones: M1 static UI, M2 integration
+
+web-ui delivers every feature twice (`TEAM-RULES.md` § "web-ui: two milestones"): **M1** static screens with hardcoded placeholder data (50% deadline), then **M2** integration with the real API (100% deadline). The current milestone is the **Current web-ui milestone** line there; read it before building, verifying, testing or shipping web-ui work.
+
+| | M1 — static UI | M2 — integration |
+|---|---|---|
+| Gate | spec ✅, plan approved, **every screen has its Figma frame** | the current milestone is M2 |
+| `tasks.md` | `Phase 2 — web-ui static UI (M1)` | `Phase 3 — web-ui integration (M2)` |
+| web-ui branch | `feature/<feature>` | `feature/<feature>-integration` |
+| Review and QA | screens, states, wording, roles shown, Figma | everything, against the real services |
+
+- Only the current milestone's web-ui tasks are built. A feature's M2 tasks wait until the team moves to M2, even when its M1 is done.
+- Service tasks (Spring, ai-service) are not split: they're built as soon as the plan is approved, so the endpoints are ready for M2.
+- In M1, the IDs only M2 delivers (data, submits, role enforcement, error codes, tests) are expected to be open. Don't report them as missing.
+
 ## 2. Where a feature lives
 
 ```

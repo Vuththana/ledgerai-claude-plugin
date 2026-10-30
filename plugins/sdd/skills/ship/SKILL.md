@@ -11,7 +11,7 @@ Load the `sdd:conventions` skill first. Nothing is committed in a code repo or p
 
 ## 1. Checks
 
-1. Run `python3 -I "${CLAUDE_SKILL_DIR}/../trace/scripts/sddtool.py" trace <docs> <feature> <repos…>`. Any ⛔ no task, ❌ QA failing or DRIFT: show them and ask whether to ship anyway — don't decide for the user.
+1. Run `python3 -I "${CLAUDE_SKILL_DIR}/../trace/scripts/sddtool.py" trace <docs> <feature> <repos…>`. Any ⛔ no task, ❌ QA failing or DRIFT: show them and ask whether to ship anyway — don't decide for the user. Shipping web-ui's M1 (conventions §1c): IDs left open only by M2 tasks are expected, not a reason to stop; list them as "for M2".
 2. In each repo, follow the `sdd:check-secrets` skill on the working tree and the commits on `feature/<feature>`. Show what it finds; fixes go to that repo's developer.
 
 ## 2. Docs branch
@@ -19,7 +19,7 @@ Load the `sdd:conventions` skill first. Nothing is committed in a code repo or p
 In the docs clone on `feature/<feature>`:
 
 - API reference entries the developers wrote: add them to a `VERSION.md` entry with their **Impact** (new endpoints → MINOR), and commit (`API: <feature> endpoints (v<X.Y.Z>)`).
-- `specs/README.md`: stage `shipped` once the user approves below; `tasks.md` and `trace.md` already committed by build / verify / qa.
+- `specs/README.md`: stage `M1 shipped` (web-ui static UI done, M2 open) or `shipped` once the user approves below; `tasks.md` and `trace.md` already committed by build / verify / qa.
 
 ## 3. Summary
 
@@ -29,7 +29,7 @@ Per repo: branch, files changed, checks with results (build, lint, tests), revie
 
 Ask the user, per repo and for the docs branch, whether to **commit and push**. Do only what they approve:
 
-- Code repos: commit on `feature/<feature>` with a message naming the feature and the task IDs (`Branch management: T01–T09 (BRN)`), then `git push -u origin feature/<feature>`. **Never push to `main` or `dev` directly** (`sdd:conventions` §1b).
+- Code repos: commit on the feature branch (`feature/<feature>`, or `feature/<feature>-integration` for web-ui's M2) with a message naming the feature, the milestone for web-ui, and the task IDs (`Branch management M1: T03–T06 (BRN)`), then `git push -u origin <branch>`. **Never push to `main` or `dev` directly** (`sdd:conventions` §1b).
 - Docs branch: `git push -u origin feature/<feature>` (and `spec/<feature>` if it isn't merged yet).
 
 Opening pull requests is a separate question. Code-repo PRs target **`dev`** (`gh pr create --base dev`), never `main`; the user merges `dev` into `main`. Never merge a code-repo PR into `main`. The docs PR merges no later than the code.

@@ -20,6 +20,8 @@ Each stage is defined once, in its own skill. For each one below, **read that sk
 | 5 | QA | `${CLAUDE_SKILL_DIR}/../qa/SKILL.md` | |
 | 6 | Ship — ⏸ Gate 2 | `${CLAUDE_SKILL_DIR}/../ship/SKILL.md` | |
 
+For web-ui, one run covers the **current milestone** only (conventions §1c): in M1 it builds, verifies, checks and ships the static UI and stops; run it again for the feature once the team is in M2.
+
 Those files aren't loaded as skills, so their skill-folder placeholder isn't filled in. Wherever one of them runs `sddtool.py`, use this path: `${CLAUDE_SKILL_DIR}/../trace/scripts/sddtool.py`.
 
 Stop and hand back to the user when:

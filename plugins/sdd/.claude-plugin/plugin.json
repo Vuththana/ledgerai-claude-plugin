@@ -1,6 +1,6 @@
 {
   "name": "sdd",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "The SDD lifecycle for every repo: /sdd:specify, clarify, amend, migrate, plan, tasks, build, verify, qa, trace, ship, run, status, review-pr, sync-docs; the spec-auditor, planner, spec-reviewer and dictionary-checker agents; sddtool.py for ID checks and the traceability matrix",
   "author": {
     "name": "Vuththana"

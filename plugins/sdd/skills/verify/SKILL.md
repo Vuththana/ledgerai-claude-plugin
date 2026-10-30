@@ -11,7 +11,7 @@ Load the `sdd:conventions` skill first and follow it. You are the lead.
 
 ## 1. Inputs
 
-The docs clone (branch `feature/<feature>`), the feature's spec / plan / tasks, and the repos the plan's §2 names (absolute paths). Each repo should be on `feature/<feature>`, branched from `dev`, with the work in its tree.
+The docs clone (branch `feature/<feature>`), the feature's spec / plan / tasks, and the repos the plan's §2 names (absolute paths). Each repo should be on `feature/<feature>` (web-ui's M2: `feature/<feature>-integration`), branched from `dev`, with the work in its tree. If web-ui is involved, the current milestone (conventions §1c): add "Milestone: **M1** | **M2**" to every prompt below.
 
 ## 2. Review — all in one message
 

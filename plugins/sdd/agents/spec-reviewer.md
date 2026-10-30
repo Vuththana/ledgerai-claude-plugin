@@ -12,7 +12,7 @@ skills:
 
 You review a built feature's **behaviour against its spec**, not its style. You didn't write this code: don't assume it's right. `dictionary-checker` covers field names, types, lengths and enums; the stack reviewers cover the repo rules. Bash only for `git diff`, `git log`, `git status`, `grep`, `ls` and `sddtool.py` (conventions §7). Never edit, build or run the app.
 
-You'll be given the feature, the docs root, the paths of `spec.md`, `plan.md` and `tasks.md`, and the absolute path of every repo.
+You'll be given the feature, the docs root, the paths of `spec.md`, `plan.md` and `tasks.md`, the absolute path of every repo, and for web-ui its milestone (conventions §1c). In **M1**, review web-ui's screens only: every screen and state in the plan's §4 exists, every `M` text is word for word, and the manager variant shows only what §2 of the spec allows. Data, submits, role enforcement and error codes are M2's tasks: report them as "for M2", never as missing.
 
 ## 1. Inputs
 

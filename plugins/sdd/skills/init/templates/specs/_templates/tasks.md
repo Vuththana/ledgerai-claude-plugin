@@ -18,19 +18,20 @@ HOW TO WRITE THIS FILE
 - Check it with `sddtool.py check <docs> <feature>`.
 -->
 
-## Phase 1 — Contract and data
+## Phase 1 — Contract and backend
 
 - [ ] **T01** `<service>` — Flyway migration for `<table>` per the dictionary · covers XXX-R03 · done when: migration applies on a fresh DB; dictionary-checker clean
 - [ ] **T02** `<service>` — `POST /path` with role check and uniqueness · covers XXX-R01, XXX-R02, XXX-E01 · after T01 · done when: `XXX-R01`/`XXX-R02`/`XXX-E01` tests green
 
-## Phase 2 — Web on the mock
+## Phase 2 — web-ui static UI (M1)
 
-- [ ] **T03** `web-ui` [P] — data layer `src/lib/api/<x>` + mock per the §3 contract · covers XXX-R01 · done when: lint + build pass
-- [ ] **T04** `web-ui` [P] — `/path` screen with every state · covers XXX-R02, XXX-E02 · after T03 · done when: each state reachable on the mock
+- [ ] **T03** `web-ui` [P] — placeholder data `src/features/<x>/placeholder-data.ts`, typed with `src/lib/types/` · covers: setup · done when: lint + build pass
+- [ ] **T04** `web-ui` [P] — `/path` screen and every state from Figma `<frame>`, on the placeholder data · covers XXX-R02, XXX-E02 · after T03 · done when: each state renders and matches its frame
 
-## Phase 3 — Integration and docs
+## Phase 3 — web-ui integration (M2)
 
-- [ ] **T05** `docs` — API reference entries for the new endpoints · covers: setup · after T02 · done when: entries confirmed by the user
+- [ ] **T05** `web-ui` — `src/lib/api/<x>` against the §3 contract, Server Action, `/path` on real data, placeholder data deleted · covers XXX-R01, XXX-R02, XXX-E02 · after T02, T04 · done when: each state reachable against the running service; `XXX-R02` test green
+- [ ] **T06** `docs` — API reference entries for the new endpoints · covers: setup · after T02 · done when: entries confirmed by the user
 
 ---
 

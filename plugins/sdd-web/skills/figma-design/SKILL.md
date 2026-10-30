@@ -34,7 +34,7 @@ Call `get_metadata` on a **section** node from the table below, not on the Works
 
 The **Components** page (`3:2`) holds the style showcase (`1071:284750`), the sidebar (`672:256748`) and the component library (`1072:463714`): icons, data display, actions, feedback and overlays, forms, navigation, AI components and mobile.
 
-The file has no screens for Branch Management or Forecasting. Build those from the spec, using the shell and components the other screens use.
+The file has no screens for Branch Management or Forecasting. Their static UI (M1, `sdd:conventions` §1c) waits until the frames exist: a screen with no frame isn't built. Ask the user to get the frames from the designer.
 
 ## 2. Read it
 

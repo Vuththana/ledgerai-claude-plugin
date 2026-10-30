@@ -27,7 +27,8 @@ Write `plan.md` from the template, every section filled:
 
 - Every live `R` and `E` is served by something in §2–§8, by ID. Before replying, list the live IDs (`sddtool.py check` prints the counts) and tick them off.
 - §3 API contract is exact: method, path, who, body fields (dictionary names), `data` shape, success status, every error code with its `M` ID. Mark endpoints not in `api/` **new**. Both sides build against it as written.
-- §2 says what must come first and what runs in parallel. web-ui builds on the mock against the contract, so it rarely waits.
+- §2 says what must come first and what runs in parallel. web-ui has two parts (conventions §1c): **M1** static screens with placeholder data, which never wait, and **M2** integration, which waits for the endpoints it calls.
+- §4 names the Figma frame of every screen and state. A screen with no frame goes in §10: its M1 can't start until the frame exists.
 - Anything the spec doesn't settle → §10, as a question. **Never decide it.** A plan with §10 items can't be approved.
 - Leave the header's commit as `<sha>`; the lead fills it at approval.
 
@@ -39,9 +40,10 @@ After `/sdd:amend` or a requested change: reply with the **whole** new plan, the
 
 From the approved `plan.md` (and an existing `tasks.md`, if any), write `tasks.md` from the template:
 
-- Small tasks: one reviewable change each, in one repo. Order: contract and data → backend ∥ web on the mock → integration and docs. Mark parallel ones `[P]`, dependencies `after`.
-- Every task `covers` the IDs it delivers; scaffolding says `covers: setup`. Every live `R` and `E` has at least one task.
-- "done when" is checkable: a test named with the ID, a command, a screen state on the mock.
+- Small tasks: one reviewable change each, in one repo. Order, in the template's phases: contract and backend ∥ web-ui static UI (M1) → web-ui integration (M2) and docs. Mark parallel ones `[P]`, dependencies `after`.
+- **M1 tasks** (conventions §1c) build screens and states from their Figma frames with hardcoded placeholder data in `src/features/<feature>/`: no `src/lib/api`, no mock, no Server Actions, no submits. **M2 tasks** replace the placeholder data with `src/lib/api` calls to the real endpoints, add Server Actions, role and branch-scope enforcement, the API's error states and the tests, and delete the placeholder data. An M2 task is `after` the backend task that builds its endpoint.
+- Every task `covers` the IDs it delivers; scaffolding says `covers: setup`. Every live `R` and `E` has at least one task. An ID whose screen is built in M1 and wired up in M2 is covered by both.
+- "done when" is checkable: a test named with the ID, a command, a screen state (M1: rendered from the placeholder data; M2: reached against the real services).
 - Tests are tasks too, or part of the task that builds the thing — every `R` needs a test or a QA scenario to be traced.
 - **Existing tasks.md:** never renumber. Keep done tasks; keep `⟳` stale ones and add replacement tasks after them with new numbers (the lead strikes the stale ones when their replacement is done); add tasks for new IDs at the end of their phase.
 - Run `sddtool.py check` on your draft's logic before replying: any "has no task" is your bug.

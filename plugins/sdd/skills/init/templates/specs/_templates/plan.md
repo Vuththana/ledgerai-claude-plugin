@@ -23,8 +23,9 @@ HOW TO WRITE THIS FILE
 
 | Repo | Role (agent) | Part | Order |
 |---|---|---|---|
-| <identity-service> | api-dev | <endpoints, migration> | first: web-ui needs the contract only, not the build |
-| web-ui | web-dev | <screens on the mock> | parallel |
+| <identity-service> | api-dev | <endpoints, migration> | first: ready before web-ui's M2 |
+| web-ui | web-dev | M1: <static screens from Figma, placeholder data> | parallel with the service |
+| web-ui | web-dev | M2: <`src/lib/api` against §3, Server Actions, roles, error states, tests> | after the endpoints, once the team is in M2 |
 
 ## 3. API contract
 
@@ -39,8 +40,11 @@ The contract every repo builds against. Taken from `api/<service>.md` where list
 
 ## 4. Screens, routes and states
 
-| Route | Who | States (loading / empty / error / each status) | IDs |
-|---|---|---|---|
+| Route | Who | States (loading / empty / error / each status) | Figma frames | IDs |
+|---|---|---|---|---|
+
+<Every screen and state names its Figma frame (`08.8 Item Adjustments — Not enough stock`). No frame → §10: its M1 waits for it.>
+<M1 placeholder data: one file per feature (`src/features/<feature>/placeholder-data.ts`), typed with `src/lib/types/`, enough rows to show every state above.>
 
 ## 5. Data
 
@@ -64,7 +68,7 @@ The contract every repo builds against. Taken from `api/<service>.md` where list
 ## 9. Packages and verification
 
 - **Packages:** none / <package, why, request drafted (web-ui)>
-- **Verification per repo:** <commands>, and per role what to check.
+- **Verification per repo:** <commands>, and per role what to check. web-ui per milestone: M1 <each screen and state against its frame>, M2 <journeys against the real services>.
 
 ## 10. Questions and conflicts
 
